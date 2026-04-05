@@ -4,7 +4,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_color_background"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/default_main_layout_padding_horizontal"
     android:paddingVertical="@dimen/default_main_layout_padding_vertical">
@@ -13,12 +12,9 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/ToolbarStyle"
         app:title="@string/app_name"
-        app:titleTextColor="@color/white"
-
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:title="@string/app_name"
+        app:titleTextColor="@color/yp_white"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -27,10 +23,10 @@
         android:layout_height="wrap_content"
         style="@style/ButtonStyle"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/yp_white"
         app:icon="@drawable/ic_search"
         android:text="@string/search"
-        android:textColor="@color/black"
+        android:textColor="@color/yp_black"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -41,6 +37,7 @@
         android:layout_weight="1"
         app:icon="@drawable/ic_library"
         android:text="@string/library"
+        android:textColor="@color/yp_black"
         />
 
     <com.google.android.material.button.MaterialButton

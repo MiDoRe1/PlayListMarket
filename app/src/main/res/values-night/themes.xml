@@ -2,6 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PlayListMarket" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/yp_black</item>
+        <item name="colorOnPrimary">@color/yp_white</item>
+
+        <!-- Background color -->
+        <item name="android:windowBackground">?attr/colorPrimary</item>
+    </style>
+
+    <style name="SecondaryMain" parent="Base.Theme.PlayListMarket">
+        <item name="colorPrimary">@color/yp_black</item>
+        <item name="colorOnPrimary">@color/yp_white</item>
+        <!-- Background color -->
+        <item name="android:windowBackground">?attr/colorPrimary</item>
     </style>
 </resources>

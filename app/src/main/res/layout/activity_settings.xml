@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingVertical="@dimen/default_main_layout_padding_vertical"
-    android:paddingHorizontal="@dimen/default_main_layout_padding_horizontal"
-    android:theme="@style/SecondaryMain"
     >
     
     <com.google.android.material.appbar.MaterialToolbar
@@ -17,7 +15,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:title="@string/settings"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:contentInsetStart="0dp"
+        app:paddingStart="0dp"
+
+        />
 
 
     <com.google.android.material.switchmaterial.SwitchMaterial

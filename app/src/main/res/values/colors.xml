@@ -23,7 +23,9 @@
     <color name="thumb_Tint_Setting">@color/default_thumb_Tint</color>
     <color name="track_Tint_Setting">@color/default_track_Tint</color>
     <color name="background_text_editor_on_search_screen">@color/yp_gray_light</color>
-    <color name="textColor_on_search_screen">@color/yp_gray</color>
-    <color name="startIconTintColor_on_search_screen">@color/textColor_on_search_screen</color>
+    <color name="textColor_on_search_screen">@color/yp_black</color>
+    <color name="hintTextColor_on_search_screen">@color/yp_gray</color>
+    <color name="startIconTintColor_on_search_screen">@color/hintTextColor_on_search_screen</color>
+    <color name="endIconTintColor_on_search_screen">@color/hintTextColor_on_search_screen</color>
 
 </resources>

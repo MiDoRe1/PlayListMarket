@@ -4,7 +4,5 @@
     <color name="thumb_Tint_Setting">@color/default_thumb_Tint_Night_Mode</color>
     <color name="track_Tint_Setting">@color/default_track_Tint_Night_Mode</color>
     <color name="background_text_editor_on_search_screen">@color/yp_white</color>
-    <color name="textColor_on_search_screen">@color/yp_black</color>
-    <color name="startIconTintColor_on_search_screen">@color/textColor_on_search_screen</color>
-
+    <color name="hintTextColor_on_search_screen">@color/yp_black</color>
 </resources>

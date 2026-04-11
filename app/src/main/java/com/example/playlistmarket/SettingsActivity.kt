@@ -3,8 +3,6 @@ package com.example.playlistmarket
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -35,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.yandex_andriod_developer_course)
+                getString(R.string.yandex_android_developer_course)
             )
             startActivity(shareIntent)
         }
@@ -44,19 +42,24 @@ class SettingsActivity : AppCompatActivity() {
         buttonWriteToSupport.setOnClickListener {
             val mailIntent = Intent(Intent.ACTION_SENDTO)
             mailIntent.data = Uri.parse("mailto:")
-            mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("myWorkMail@mail.com"))
+            mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(
+                getString(R.string.work_mail)
+            ))
             mailIntent.putExtra(
                 Intent.EXTRA_SUBJECT,
-                getString(R.string.subject_for_email_to_support))
-            mailIntent.putExtra(Intent.EXTRA_TEXT,
-                R.string.text_for_email_to_support)
+                getString(R.string.subject_for_email_to_support)
+            )
+            mailIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                getString(R.string.text_for_email_to_support)
+            )
             startActivity(mailIntent)
         }
 
         val buttonUserAgreement = findViewById<MaterialTextView>(R.id.buttonUserAgreement)
         buttonUserAgreement.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW)
-            browserIntent.data = Uri.parse("https://yandex.ru/legal/practicum_offer/ru/")
+            browserIntent.data = Uri.parse(getString(R.string.user_agreement_url))
             startActivity(browserIntent)
         }
     }

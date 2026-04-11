@@ -5,20 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingVertical="@dimen/default_main_layout_padding_vertical"
     >
     
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/header_toolbar"
-        app:titleTextAppearance="@style/CommonTitleTextForToolbarStyle"
+        style="@style/ToolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         app:title="@string/settings"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:contentInsetStart="0dp"
         app:paddingStart="0dp"
-
         />
 
 
@@ -26,6 +23,10 @@
         android:id="@+id/buttonBlackTheme"
         style="@style/SettingMenuItemStyle"
         android:text="@string/dark_theme"
+        android:checked="false"
+        app:thumbTint="@color/thumb_Tint_Setting"
+        app:trackTint="@color/track_Tint_Setting"
+        app:useMaterialThemeColors="false"
         />
 
     <com.google.android.material.textview.MaterialTextView
@@ -45,6 +46,5 @@
         style="@style/SettingMenuItemStyle"
         android:text="@string/user_agreement"
         android:drawableEnd="@drawable/ic_arrow_forward"
-        android:paddingRight="9dp"
         />
 </LinearLayout>

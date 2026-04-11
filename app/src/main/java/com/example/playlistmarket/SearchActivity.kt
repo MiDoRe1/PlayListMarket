@@ -12,10 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class SearchActivity : AppCompatActivity() {
+
+    private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,6 +28,10 @@ class SearchActivity : AppCompatActivity() {
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             v.updatePadding(top = statusBar.top)
             insets
+        }
+        val headerToolbar = findViewById<MaterialToolbar>(R.id.headerToolbar)
+        headerToolbar.setNavigationOnClickListener {
+            finish()
         }
 
         val searchTextInput = findViewById<TextInputLayout>(R.id.searchTextInput)
@@ -49,7 +57,11 @@ class SearchActivity : AppCompatActivity() {
                 start: Int,
                 count: Int,
                 after: Int
-            ) {}
+            ) {
+                if (searchEditText.text?.isEmpty() == false) {
+                    inputTextSearch = searchEditText.text.toString()
+                }
+            }
 
             override fun onTextChanged(
                 s: CharSequence?,
@@ -65,8 +77,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val editText = findViewById<TextInputEditText>(R.id.searchEditText)
-        outState.putString(INPUT_TEXT_FOR_SEARCH ,editText.getText().toString())
+        outState.putString(INPUT_TEXT_FOR_SEARCH ,inputTextSearch)
     }
 
     override fun onRestoreInstanceState(
@@ -79,7 +90,8 @@ class SearchActivity : AppCompatActivity() {
             val searchTextFromBundle = savedInstanceState.getString(
                 INPUT_TEXT_FOR_SEARCH,
                 DEFAULT_TEXT_FOR_SEARCH)
-            searchEditText.setText(searchTextFromBundle)
+            inputTextSearch = searchTextFromBundle
+            searchEditText.setText(inputTextSearch)
         }
     }
     companion object {

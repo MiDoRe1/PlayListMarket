@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fill_for_ic_on_settings_screen">@color/yp_white</color>
+    <color name="thumb_Tint_Setting">@color/default_thumb_Tint_Night_Mode</color>
+    <color name="track_Tint_Setting">@color/default_track_Tint_Night_Mode</color>
+    <color name="background_text_editor_on_search_screen">@color/yp_white</color>
+    <color name="hintTextColor_on_search_screen">@color/yp_black</color>
+</resources>

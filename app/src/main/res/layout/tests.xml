@@ -1,68 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1B22"
+    tools:context=".SearchActivity"
     android:orientation="vertical"
-    android:padding="20dp">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="Вопрос:"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="2/10"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-    </FrameLayout>
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="63dp"
-        android:layout_marginTop="33dp"
-        android:gravity="center"
-        android:text="Рейтинг этого фильма больше чем 9?"
-        android:textColor="#ffffff"
-        android:textSize="23sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/headerToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:orientation="horizontal">
+        style="@style/ToolbarStyle"
+        android:layout_marginBottom="0dp"
+        app:title="@string/search"
+        app:navigationIcon="@drawable/ic_arrow_back"/>
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:backgroundTint="#ffffff"
-            android:text="Нет"
-            android:textColor="#1A1B22" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxBackgroundColor="@color/background_text_editor_on_search_screen"
+        app:startIconDrawable="@drawable/ic_search_mini"
+        app:startIconTint="@color/textColor_on_search_screen"
+        app:endIconTint="@color/endIconTintColor_on_search_screen"
+        app:endIconDrawable="@drawable/ic_clear"
+        app:endIconMode="clear_text"
+        app:hintEnabled="false"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:cursorColor="@color/yp_blue">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:backgroundTint="#ffffff"
-            android:text="Да"
-            android:textColor="#1A1B22" />
-    </LinearLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:paddingBottom="0dp"
+            android:paddingTop="0dp"
+            android:hint="@string/search"
+            android:maxLines="1"
+            android:textSize="16sp"
+
+            android:layout_marginLeft="0dp"
+
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="@color/textColor_on_search_screen"
+            android:textColorHint="@color/textColor_on_search_screen" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 </LinearLayout>

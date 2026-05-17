@@ -27,5 +27,7 @@
     <color name="hintTextColor_on_search_screen">@color/yp_gray</color>
     <color name="startIconTintColor_on_search_screen">@color/hintTextColor_on_search_screen</color>
     <color name="endIconTintColor_on_search_screen">@color/hintTextColor_on_search_screen</color>
+    <color name="track_name_on_search_screen">@color/yp_black</color>
+    <color name="track_group_and_time_on_search_screen">@color/yp_gray</color>
 
 </resources>

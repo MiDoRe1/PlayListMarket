@@ -23,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:paddingHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusBottomEnd="8dp"
         app:boxCornerRadiusTopEnd="8dp"
@@ -57,5 +58,16 @@
             android:textColorHint="@color/hintTextColor_on_search_screen" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tracks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:listitem="@layout/track_item"
+        android:layout_marginHorizontal="16dp"
+        />
+
 
 </LinearLayout>

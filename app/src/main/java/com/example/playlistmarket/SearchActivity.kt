@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.core.widget.addTextChangedListener
+import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmarket.TrackModel.Track
+import com.example.playlistmarket.TrackModel.TrackAdapter
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -29,6 +33,9 @@ class SearchActivity : AppCompatActivity() {
             v.updatePadding(top = statusBar.top)
             insets
         }
+
+        initRvTracks()
+
         val headerToolbar = findViewById<MaterialToolbar>(R.id.headerToolbar)
         headerToolbar.setNavigationOnClickListener {
             finish()
@@ -48,6 +55,7 @@ class SearchActivity : AppCompatActivity() {
                 DEFAULT_TEXT_FOR_SEARCH)
             searchEditText.setText(searchTextFromBundle)
         }
+
 
         searchEditText.addTextChangedListener(
             object : TextWatcher {
@@ -75,6 +83,10 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
+    fun initRvTracks() {
+        val rvTracks = findViewById<RecyclerView>(R.id.rv_tracks)
+        rvTracks.adapter = TrackAdapter(Track.getMockTraks())
+    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_TEXT_FOR_SEARCH ,inputTextSearch)
@@ -97,5 +109,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
         val DEFAULT_TEXT_FOR_SEARCH: String = ""
+
     }
 }

@@ -10,7 +10,7 @@
         android:id="@+id/track_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/img_placeholder_track"
+        android:src="@drawable/img_track_placeholder"
         android:scaleType="centerCrop"/>
 
     <LinearLayout

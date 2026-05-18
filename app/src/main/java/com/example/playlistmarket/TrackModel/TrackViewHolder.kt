@@ -1,5 +1,7 @@
 package com.example.playlistmarket.TrackModel
 
+import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,8 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.R
+import com.example.playlistmarket.utils.dpToPx
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackNameView: TextView
@@ -32,11 +36,29 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackNameView.text = model.trackName
         artistNameView.text = model.artistName
         trackTimeView.text = model.trackTime
+        loadArtworkView(model.artworkUrl100)
+    }
+
+    private fun loadArtworkView(artworkUrl100: String) {
+        val pxValueOfRoundedCorner = dpToPx(
+            getDpSizeForRoundedCornerOfTrackImage(),
+            artworkView.context
+        )
         Glide.with(artworkView)
-            .load(model.artworkUrl100)
-            .placeholder(R.drawable.img_placeholder_track)
-            .error(R.drawable.img_placeholder_track)
-            .transform(RoundedCorners(2))
+            .load(artworkUrl100)
+            .placeholder(R.drawable.img_track_placeholder)
+            .error(R.drawable.img_track_placeholder)
+            .transform(CenterCrop(), RoundedCorners(pxValueOfRoundedCorner))
             .into(artworkView)
+    }
+    private fun getDpSizeForRoundedCornerOfTrackImage(): Float {
+        val outValue = TypedValue()
+        artworkView.context.resources.getValue(
+            R.dimen.default_rounded_corner_of_track_image,
+            outValue,
+            true
+        )
+        val dpValue = TypedValue.complexToFloat(outValue.data)
+        return dpValue
     }
 }

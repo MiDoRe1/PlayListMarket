@@ -138,6 +138,9 @@ class SearchActivity : AppCompatActivity() {
             object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     inputTextSearch = searchEditText.text.toString().trim()
+                    if (inputTextSearch.isEmpty()) {
+                        resetViewModel()
+                    }
                 }
                 override fun beforeTextChanged(
                     s: CharSequence?,

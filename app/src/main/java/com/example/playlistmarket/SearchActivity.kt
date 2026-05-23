@@ -1,7 +1,6 @@
 package com.example.playlistmarket
 
-import android.health.connect.datatypes.units.Length
-import android.icu.text.SimpleDateFormat
+
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -9,24 +8,21 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.example.playlistmarket.ITunesSearchAPI.ITunesSearchAPIWorker
-import com.example.playlistmarket.ITunesSearchAPI.TrackInfo
 import com.example.playlistmarket.ITunesSearchAPI.TrackInfoResponse
 import com.example.playlistmarket.TrackModel.Track
 import com.example.playlistmarket.TrackModel.TrackAdapter
+import com.example.playlistmarket.utils.toTrackModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
@@ -35,8 +31,7 @@ class SearchActivity : AppCompatActivity() {
     private val itunesWorker = ITunesSearchAPIWorker()
     private val onSuccessLoadTrackInfo = ITunesSearchAPIWorker.OnResponseReactable { tracks ->
         updateTrackViewModel(tracks)
-        if (this.tracks.size == 0) {
-            searchEditText.setText("")
+        if (this.tracks.isEmpty()) {
             showEmptyResultPlaceholder()
         }
     }
@@ -55,15 +50,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateTrackViewModel(itunesTracks: TrackInfoResponse?)  {
         tracks.clear()
-        val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
-
         itunesTracks?.results?.mapTo(tracks) { itunesTrack ->
-            Track(
-                trackName = itunesTrack.trackName ?: getString(R.string.unknown_track_name),
-                artistName = itunesTrack.artistName ?: getString(R.string.unknown_artist_name),
-                trackTime = timeFormatter.format(itunesTrack.trackTimeMillis ?: 0L),
-                artworkUrl100 = itunesTrack.artworkUrl100 ?: getString(R.string.unknown_track_url)
-            )
+            itunesTrack.toTrackModel(this)
         }
         rvTracks.adapter?.notifyDataSetChanged()
     }
@@ -104,34 +92,34 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun initAllPlaceholders() {
-        emptyResultPlaceholder = findViewById<LinearLayout>(R.id.empty_result_placeholder)
-        failLoadPlaceholder = findViewById<LinearLayout>(R.id.fail_load_placeholder)
+        emptyResultPlaceholder = findViewById(R.id.empty_result_placeholder)
+        failLoadPlaceholder = findViewById(R.id.fail_load_placeholder)
         emptyResultPlaceholder.visibility = View.GONE
         failLoadPlaceholder.visibility = View.GONE
     }
 
     fun initRvTracks() {
-        rvTracks = findViewById<RecyclerView>(R.id.rv_tracks)
+        rvTracks = findViewById(R.id.rv_tracks)
         rvTracks.adapter = TrackAdapter(tracks)
     }
 
     fun initHeaderToolBar() {
-        headerToolbar = findViewById<MaterialToolbar>(R.id.headerToolbar)
+        headerToolbar = findViewById(R.id.headerToolbar)
         headerToolbar.setNavigationOnClickListener {
             finish()
         }
     }
 
     fun initButtonTryAgain() {
-        buttonTryAgain = findViewById<MaterialButton>(R.id.button_try_again)
+        buttonTryAgain = findViewById(R.id.button_try_again)
         buttonTryAgain.setOnClickListener { view ->
             loadTrackInfo()
         }
     }
 
     fun initSearchTextInput() {
-        searchTextInput = findViewById<TextInputLayout>(R.id.searchTextInput)
-        searchEditText = findViewById<TextInputEditText>(R.id.searchEditText)
+        searchTextInput = findViewById(R.id.searchTextInput)
+        searchEditText = findViewById(R.id.searchEditText)
 
         searchTextInput.setEndIconOnClickListener {
             resetAllSearchItems()
@@ -228,8 +216,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
-        val DEFAULT_TEXT_FOR_SEARCH: String = ""
+        const val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
+        const val DEFAULT_TEXT_FOR_SEARCH: String = ""
 
     }
 }

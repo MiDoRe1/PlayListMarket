@@ -58,26 +58,7 @@ class ITunesSearchAPIWorker(baseUrl: String = DEFAULT_URL_ITUNES) {
     }
 
     companion object {
-        val DEFAULT_URL_ITUNES : String =  "https://itunes.apple.com/"
+        const val DEFAULT_URL_ITUNES : String =  "https://itunes.apple.com/"
     }
 
 }
-
-
-private interface ITunesSearchAPIInterface {
-    @GET("search")
-    fun getTracks(@Query("term") text:String): Call<TrackInfoResponse>
-}
-
-data class TrackInfoResponse (
-    val resultCount: Int?,
-    val results: List<TrackInfo>?
-)
-
-data class TrackInfo (
-    val trackName: String?,
-    val artistName: String?,
-    val trackTimeMillis: Long?,
-    val artworkUrl100: String?
-)
-

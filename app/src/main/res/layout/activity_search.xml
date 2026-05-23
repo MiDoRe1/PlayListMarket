@@ -9,6 +9,7 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/headerToolbar"
         android:layout_width="match_parent"
@@ -55,19 +56,92 @@
             android:background="@null"
             android:fontFamily="@font/ys_display_regular"
             android:textColor="@color/textColor_on_search_screen"
-            android:textColorHint="@color/hintTextColor_on_search_screen" />
+            android:textColorHint="@color/hintTextColor_on_search_screen"
+            android:imeOptions="actionDone"
+            android:inputType="text"/>
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_tracks"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        tools:listitem="@layout/track_item"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="16dp"
-        />
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tracks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            tools:listitem="@layout/track_item"
+            />
+
+        <LinearLayout
+            android:id="@+id/empty_result_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_empty_result"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="16dp"
+                style="@style/CommonTextStyle"
+                android:text="@string/empty_result"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fail_load_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_fail_load_placeholder"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                style="@style/CommonTextStyle"
+                android:text="@string/failed_to_load"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_try_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cornerRadius="54dp"
+                android:backgroundTint="?attr/colorOnPrimary"
+                android:fontFamily="@font/ys_display_medium"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                android:textFontWeight="500"
+                android:textAllCaps="false"
+                android:text="@string/update"
+                />
+        </LinearLayout>
+    </FrameLayout>
+
 
 
 </LinearLayout>

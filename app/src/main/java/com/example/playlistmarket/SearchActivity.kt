@@ -1,6 +1,7 @@
 package com.example.playlistmarket
 
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -13,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.ITunesSearchAPI.ITunesSearchAPIWorker
 import com.example.playlistmarket.ITunesSearchAPI.TrackInfoResponse
+import com.example.playlistmarket.SharedPreferencesPack.SearchHistoryPreferencesWorker
 import com.example.playlistmarket.TrackModel.Track
 import com.example.playlistmarket.TrackModel.TrackAdapter
 import com.example.playlistmarket.utils.toTrackModel
@@ -24,10 +27,16 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
+
 class SearchActivity : AppCompatActivity() {
 
     private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
     private val tracks = mutableListOf<Track>()
+    private val viewedTracks = SearchHistoryPreferencesWorker.viewedTracks.toMutableList()
+    val onSearchHistoryChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
+        ref, key ->
+        updateViewedTracks()
+    }
     private val itunesWorker = ITunesSearchAPIWorker()
     private val onSuccessLoadTrackInfo = ITunesSearchAPIWorker.OnResponseReactable { tracks ->
         updateTrackViewModel(tracks)
@@ -46,6 +55,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var emptyResultPlaceholder : LinearLayout
     private lateinit var failLoadPlaceholder : LinearLayout
     private lateinit var buttonTryAgain : MaterialButton
+    private lateinit var rvViewedTracks : RecyclerView
+    private lateinit var layoutSearchHistory: LinearLayout
+    private lateinit var buttonClearHistory: MaterialButton
+
 
 
     private fun updateTrackViewModel(itunesTracks: TrackInfoResponse?)  {
@@ -79,6 +92,9 @@ class SearchActivity : AppCompatActivity() {
         initHeaderToolBar()
         initButtonTryAgain()
         initSearchTextInput()
+        initLayoutSearchHistory()
+        initRvViewedTracks()
+        initButtonClearHistory()
         if (savedInstanceState != null) {
             loadSearchStringInTextInput(
                 savedInstanceState.getString(
@@ -91,6 +107,44 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun initLayoutSearchHistory() {
+        layoutSearchHistory = findViewById(R.id.layout_search_history)
+        layoutSearchHistory.visibility = View.GONE
+    }
+
+    private fun initRvViewedTracks() {
+        rvViewedTracks = findViewById(R.id.rv_viewed_tracks)
+        rvViewedTracks.adapter = TrackAdapter(viewedTracks) { track ->
+            addViewedTrack(track)
+        }
+        rvViewedTracks.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            true
+        ).apply {
+            stackFromEnd = true
+        }
+    }
+
+    private fun addViewedTrack(track: Track) {
+        SearchHistoryPreferencesWorker.addTrack(track)
+    }
+
+    private fun initButtonClearHistory() {
+        buttonClearHistory = findViewById(R.id.button_clear_history)
+        buttonClearHistory.setOnClickListener {
+            SearchHistoryPreferencesWorker.clearSearchTrackHistory()
+        }
+    }
+
+    private fun executeHistorySearchLogic(currentSearchText: String = searchEditText.text.toString()) {
+        if (searchEditText.hasFocus() && currentSearchText.isEmpty() && !viewedTracks.isEmpty()) {
+            layoutSearchHistory.visibility = View.VISIBLE
+        } else {
+            layoutSearchHistory.visibility = View.GONE
+        }
+    }
+
     fun initAllPlaceholders() {
         emptyResultPlaceholder = findViewById(R.id.empty_result_placeholder)
         failLoadPlaceholder = findViewById(R.id.fail_load_placeholder)
@@ -100,7 +154,9 @@ class SearchActivity : AppCompatActivity() {
 
     fun initRvTracks() {
         rvTracks = findViewById(R.id.rv_tracks)
-        rvTracks.adapter = TrackAdapter(tracks)
+        rvTracks.adapter = TrackAdapter(tracks) {track ->
+            addViewedTrack(track)
+        }
     }
 
     fun initHeaderToolBar() {
@@ -134,6 +190,11 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        searchEditText.setOnFocusChangeListener { view, hasFocus ->
+            executeHistorySearchLogic()
+        }
+
+
         searchEditText.addTextChangedListener(
             object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -149,8 +210,6 @@ class SearchActivity : AppCompatActivity() {
                     after: Int
                 ) {
 
-
-
                 }
 
                 override fun onTextChanged(
@@ -159,7 +218,7 @@ class SearchActivity : AppCompatActivity() {
                     before: Int,
                     count: Int
                 ) {
-
+                    executeHistorySearchLogic(s.toString())
                 }
 
             })
@@ -183,6 +242,7 @@ class SearchActivity : AppCompatActivity() {
     fun resetAllPlaceholders() {
         emptyResultPlaceholder.visibility = View.GONE
         failLoadPlaceholder.visibility = View.GONE
+        layoutSearchHistory.visibility = View.GONE
     }
 
     fun resetViewModel() {
@@ -216,6 +276,26 @@ class SearchActivity : AppCompatActivity() {
             inputTextSearch = searchTextFromBundle
             searchEditText.setText(inputTextSearch)
         }
+    }
+
+    private fun updateViewedTracks() {
+        viewedTracks.clear()
+        viewedTracks.addAll(
+            SearchHistoryPreferencesWorker.viewedTracks.toMutableList()
+        )
+        rvViewedTracks.adapter?.notifyDataSetChanged()
+        executeHistorySearchLogic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        SearchHistoryPreferencesWorker.registerListener(onSearchHistoryChangeListener)
+        updateViewedTracks()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        SearchHistoryPreferencesWorker.unregisterListener(onSearchHistoryChangeListener)
     }
 
     companion object {

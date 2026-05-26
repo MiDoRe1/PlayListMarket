@@ -1,6 +1,5 @@
 package com.example.playlistmarket.TrackModel
 
-import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.R
 import com.example.playlistmarket.utils.dpToPx
 
-class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TrackViewHolder(
+    itemView: View,
+    private val onItemClick: (position: Int)-> Unit
+) : RecyclerView.ViewHolder(itemView) {
+
     private val trackNameView: TextView
     private val artistNameView: TextView // Имя исполнителя
     private val trackTimeView: TextView // Продолжительность трека
@@ -25,11 +28,18 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         artistNameView = itemView.findViewById(R.id.track_group)
         trackTimeView = itemView.findViewById(R.id.track_time)
         artworkView = itemView.findViewById(R.id.track_image)
+        itemView.setOnClickListener {
+            val position = bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                onItemClick(position)
+            }
+        }
     }
 
-    constructor(parent: ViewGroup): this(
+    constructor(parent: ViewGroup, onItemClick: (position: Int) -> Unit): this(
         LayoutInflater.from(parent.context)
-            .inflate(R.layout.track_item, parent, false)
+            .inflate(R.layout.track_item, parent, false),
+        onItemClick
     )
 
     fun bind(model: Track) {

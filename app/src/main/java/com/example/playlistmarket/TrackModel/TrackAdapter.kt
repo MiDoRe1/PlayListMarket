@@ -1,18 +1,21 @@
 package com.example.playlistmarket.TrackModel
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmarket.R
 
 class TrackAdapter(
-    private val tracks: List<Track>
+    private val tracks: List<Track>,
+    private val onTrackClick: (Track) -> Unit
 ): RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TrackViewHolder =  TrackViewHolder(parent)
+    ): TrackViewHolder =  TrackViewHolder(parent) {
+        position ->
+        val track = tracks[position]
+        onTrackClick(track)
+    }
 
 
     override fun onBindViewHolder(

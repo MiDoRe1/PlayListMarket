@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmarket.SharedPreferencesPack.AppSettingsPreferencesWorker
+import com.example.playlistmarket.SharedPreferencesPack.SearchHistoryPreferencesWorker
 
 class PlayListMarketApp : Application() {
 
@@ -17,6 +18,7 @@ class PlayListMarketApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AppSettingsPreferencesWorker.init(this)
+        SearchHistoryPreferencesWorker.init(this)
         switchTheme(AppSettingsPreferencesWorker.isDarkThemeEnabled)
         AppSettingsPreferencesWorker.registerListener(settingsAppChangeListener)
     }

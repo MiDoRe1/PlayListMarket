@@ -61,6 +61,7 @@
             android:inputType="text"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -75,6 +76,52 @@
             android:orientation="vertical"
             tools:listitem="@layout/track_item"
             />
+
+        <LinearLayout
+            android:id="@+id/layout_search_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CommonTextStyle"
+                android:paddingTop="18dp"
+                android:paddingBottom="12dp"
+                android:textFontWeight="500"
+                android:text="@string/you_were_looking_for"
+                android:gravity="center"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_viewed_tracks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                tools:listitem="@layout/track_item"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_clear_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                style="@style/CommonStyleForButtonOnSearchScreen"
+                app:cornerRadius="6dp"
+                android:backgroundTint="?attr/colorOnPrimary"
+                android:fontFamily="@font/ys_display_medium"
+                android:textColor="?attr/colorPrimary"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:text="@string/clear_history"
+                />
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/empty_result_placeholder"
@@ -130,13 +177,9 @@
                 android:id="@+id/button_try_again"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cornerRadius="54dp"
-                android:backgroundTint="?attr/colorOnPrimary"
-                android:fontFamily="@font/ys_display_medium"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="14sp"
-                android:textFontWeight="500"
+                style="@style/CommonStyleForButtonOnSearchScreen"
                 android:textAllCaps="false"
+                app:cornerRadius="54dp"
                 android:text="@string/update"
                 />
         </LinearLayout>

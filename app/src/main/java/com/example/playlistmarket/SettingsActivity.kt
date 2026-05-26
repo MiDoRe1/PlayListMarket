@@ -16,21 +16,20 @@ import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var settingsToolBar : MaterialToolbar
-    private lateinit var buttonShareApp : MaterialTextView
-    private lateinit var buttonWriteToSupport : MaterialTextView
-    private lateinit var buttonUserAgreement : MaterialTextView
-    private lateinit var switchBlackTheme : SwitchMaterial
+    private lateinit var settingsToolBar: MaterialToolbar
+    private lateinit var buttonShareApp: MaterialTextView
+    private lateinit var buttonWriteToSupport: MaterialTextView
+    private lateinit var buttonUserAgreement: MaterialTextView
+    private lateinit var switchBlackTheme: SwitchMaterial
 
-    private val themeChangeListener = SharedPreferences.OnSharedPreferenceChangeListener{
-        pref, key ->
-        if (key == AppSettingsPreferencesWorker.KEY_THEME) {
-            if (switchBlackTheme.isChecked != AppSettingsPreferencesWorker.isDarkThemeEnabled) {
-                switchBlackTheme.isChecked = AppSettingsPreferencesWorker.isDarkThemeEnabled
+    private val themeChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
+            if (key == AppSettingsPreferencesWorker.KEY_THEME) {
+                if (switchBlackTheme.isChecked != AppSettingsPreferencesWorker.isDarkThemeEnabled) {
+                    switchBlackTheme.isChecked = AppSettingsPreferencesWorker.isDarkThemeEnabled
+                }
             }
         }
-    }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,9 +86,11 @@ class SettingsActivity : AppCompatActivity() {
         buttonWriteToSupport.setOnClickListener {
             val mailIntent = Intent(Intent.ACTION_SENDTO)
             mailIntent.data = Uri.parse("mailto:")
-            mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(
-                getString(R.string.work_mail)
-            ))
+            mailIntent.putExtra(
+                Intent.EXTRA_EMAIL, arrayOf(
+                    getString(R.string.work_mail)
+                )
+            )
             mailIntent.putExtra(
                 Intent.EXTRA_SUBJECT,
                 getString(R.string.subject_for_email_to_support)
@@ -107,7 +108,7 @@ class SettingsActivity : AppCompatActivity() {
         switchBlackTheme.isChecked = AppSettingsPreferencesWorker.isDarkThemeEnabled
         switchBlackTheme.setOnCheckedChangeListener { _, checked ->
             AppSettingsPreferencesWorker.isDarkThemeEnabled = checked
-            }
+        }
     }
 
     override fun onStart() {

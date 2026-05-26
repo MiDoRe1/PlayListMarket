@@ -83,7 +83,13 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            v.updatePadding(top = statusBar.top)
+            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.setPadding(
+                v.paddingLeft,
+                statusBar.top,
+                v.paddingRight,
+                navigationBars.bottom
+            )
             insets
         }
 

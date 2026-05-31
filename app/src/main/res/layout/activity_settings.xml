@@ -20,7 +20,7 @@
 
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/buttonBlackTheme"
+        android:id="@+id/switchBlackTheme"
         style="@style/SettingMenuItemStyle"
         android:text="@string/dark_theme"
         android:checked="false"

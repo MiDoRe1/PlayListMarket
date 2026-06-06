@@ -1,6 +1,7 @@
 package com.example.playlistmarket
 
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -26,6 +27,8 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 
 class SearchActivity : AppCompatActivity() {
@@ -47,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
     private val onFailLoadTrackInfo = ITunesSearchAPIWorker.OnFailureReactable {
         showFailPlaceholder()
     }
+
 
     private lateinit var rvTracks : RecyclerView
     private lateinit var headerToolbar : MaterialToolbar
@@ -120,9 +124,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initRvViewedTracks() {
         rvViewedTracks = findViewById(R.id.rv_viewed_tracks)
-        rvViewedTracks.adapter = TrackAdapter(viewedTracks) { track ->
-            addViewedTrack(track)
-        }
+        rvViewedTracks.adapter = TrackAdapter(viewedTracks, this::onTrackClick)
         rvViewedTracks.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -160,9 +162,21 @@ class SearchActivity : AppCompatActivity() {
 
     fun initRvTracks() {
         rvTracks = findViewById(R.id.rv_tracks)
-        rvTracks.adapter = TrackAdapter(tracks) {track ->
-            addViewedTrack(track)
-        }
+        rvTracks.adapter = TrackAdapter(tracks, this::onTrackClick)
+    }
+
+    private fun onTrackClick(track: Track) {
+        addViewedTrack(track)
+        startMusicPlayer(track)
+    }
+
+    private fun startMusicPlayer(track: Track) {
+        val musicPlayerIntent = Intent(this@SearchActivity, MusicPlayActivity::class.java)
+        musicPlayerIntent.putExtra(
+            MusicPlayActivity.JSON_FORMAT_TRACK_KEY,
+            Gson().toJson(track)
+        )
+        startActivity(musicPlayerIntent)
     }
 
     fun initHeaderToolBar() {

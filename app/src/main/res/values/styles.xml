@@ -13,6 +13,17 @@
         <item name="android:textSize">19sp</item>
     </style>
 
+    <style name="TextStileTrackDescriptionTitlesOnPlayMusic" parent="CommonTextStyle">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/yp_gray</item>
+        <item name="android:layout_marginTop">17dp</item>
+    </style>
+
+    <style name="TextStileTrackDescriptionValuesOnPlayMusic" parent="CommonTextStyle">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+
     <style name="TextEditorStyle" parent="Widget.MaterialComponents.TextInputEditText.FilledBox">
         <item name="android:paddingStart">0dp</item>
     </style>

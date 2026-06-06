@@ -29,5 +29,6 @@
     <color name="endIconTintColor_on_search_screen">@color/hintTextColor_on_search_screen</color>
     <color name="track_name_on_search_screen">@color/yp_black</color>
     <color name="track_group_and_time_on_search_screen">@color/yp_gray</color>
+    <color name="side_button_substrate_on_the_player">#1A1B22</color>
 
 </resources>

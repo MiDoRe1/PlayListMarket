@@ -6,4 +6,6 @@
     <dimen name="default_main_layout_padding_vertical">22dp</dimen>
     <dimen name="default_main_layout_padding_horizontal">16dp</dimen>
     <dimen name="default_rounded_corner_of_track_image">2dp</dimen>
+    <dimen name="default_rounded_corner_of_track_image_wide">8dp</dimen>
+    <dimen name="default_padding_between_elements_in_row">10dp</dimen>
 </resources>

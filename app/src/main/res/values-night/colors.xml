@@ -7,4 +7,5 @@
     <color name="hintTextColor_on_search_screen">@color/yp_black</color>
     <color name="track_name_on_search_screen">@color/yp_white</color>
     <color name="track_group_and_time_on_search_screen">@color/yp_white</color>
+    <color name="side_button_substrate_on_the_player">#FFFFFF</color>
 </resources>

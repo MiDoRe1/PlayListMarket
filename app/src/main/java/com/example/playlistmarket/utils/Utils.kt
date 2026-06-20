@@ -7,6 +7,7 @@ import com.example.playlistmarket.ITunesSearchAPI.TrackInfo
 import com.example.playlistmarket.R
 import com.example.playlistmarket.TrackModel.Track
 import java.util.Locale
+import kotlin.String
 import kotlin.random.Random
 
 fun dpToPx(dp: Float, context: Context): Int {
@@ -23,7 +24,11 @@ fun TrackInfo.toTrackModel(context: Context): Track {
         trackName = trackName ?: context.getString(R.string.unknown_track_name),
         artistName = artistName ?: context.getString(R.string.unknown_artist_name),
         trackTime = timeFormatter.format(trackTimeMillis ?: 0L),
-        artworkUrl100 = artworkUrl100 ?: context.getString(R.string.unknown_track_url)
+        artworkUrl100 = artworkUrl100 ?: context.getString(R.string.unknown_track_url),
+        collectionName = collectionName ?: "",
+        releaseDate = releaseDate ?: "",
+        primaryGenreName = primaryGenreName ?: "",
+        country = country ?: ""
     )
     return trackModel
 }

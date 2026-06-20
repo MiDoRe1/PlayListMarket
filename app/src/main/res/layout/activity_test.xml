@@ -1,214 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Test"
-    android:background="@color/yp_white">
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextTotalTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0" />
 
     <Button
-        android:id="@+id/CenterButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonStart"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Center"
-        android:layout_centerInParent="true"
-        android:background="@color/yp_blue"
-        />
-
-    <View
-        android:id="@+id/ViewAbove"
-        android:layout_width="10dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:background="#4CAF50"
-        android:layout_above="@id/CenterButton"
-        android:layout_marginBottom="10dp"/>
-
-    <View
-        android:id="@+id/ViewBelow"
-        android:layout_width="10dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/CenterButton"
-        android:background="#4CAF50"
-        android:layout_marginTop="10dp"
-        />
-
-    <View
-        android:id="@+id/LeftView"
-        android:layout_width="100dp"
-        android:layout_height="10dp"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/CenterButton"
-        android:layout_marginEnd="10dp"
-        android:background="#4CAF50" />
-
-    <View
-        android:id="@+id/RightView"
-        android:layout_width="100dp"
-        android:layout_height="10dp"
-        android:layout_toEndOf="@id/CenterButton"
-        android:layout_centerVertical="true"
-        android:background="#4CAF50"
-        android:layout_marginStart="10dp"
-        />
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/yp_white"
+        android:textColor="@color/black"
+        android:text="Start" />
 
     <TextView
-        android:id="@+id/LeftTopCorner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Left Top Corner"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/LeftTopCorner"
-        android:layout_above="@id/FromTopStartToTopEnd"
-        android:layout_toStartOf="@id/BeetwenTwoText"
-        android:layout_alignParentStart="true"
-        android:background="@color/yp_gray">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-    </FrameLayout>
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/BottomStart"
-        android:layout_alignStart="@id/BottomStart"
-        android:layout_above="@id/LeftBottomCorner"
-        android:layout_alignEnd="@+id/BottomEnd"
-        android:background="@color/yp_gray"/>
-
-    <TextView
-        android:id="@+id/BeetwenTwoText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Beetwen two text"
-        android:layout_below="@id/LeftTopCorner"
-        android:layout_toEndOf="@id/LeftTopCorner"
-        android:layout_toStartOf="@id/RightTopCorner"
-        android:background="@color/yp_blue"
+        android:id="@+id/textViewCurrentTime"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="10dp"/>
+        android:textSize="100dp"
+        android:text="00:00"/>
 
-    <TextView
-        android:id="@+id/RightTopCorner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:text="Right Top Corner"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:id="@+id/LeftBottomCorner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:text="Left Bottom Corner"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="Right Bottom Corner"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:id="@+id/TopStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/ViewAbove"
-        android:layout_alignStart="@id/LeftView"
-        android:text="Top Start"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/FromTopStartToTopEnd"
-        android:layout_alignBottom="@id/BottomEnd"
-        android:background="@color/yp_blue"
-        android:layout_alignParentStart="true"
-        android:text="From\nTopSta\r\nt\nT\no\nB\no\nt\nt\no\nm\nS\nt\nart"
-        android:gravity="center"
-        android:lines="10"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/TopEnd"
-        android:layout_above="@id/BottomEnd"
-        android:layout_alignParentEnd="true"
-        android:text="V\ne\nr\nt\ni\nc\na\nl"
-        android:gravity="center"
-        android:padding="10dp"
-        android:background="@color/yp_blue"/>
-
-    <TextView
-        android:id="@+id/FromTopStartToTopEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@id/TopStart"
-        android:layout_alignEnd="@id/TopEnd"
-        android:text="From TopStart to TopEnd"
-        android:layout_above="@id/TopStart"
-        android:gravity="center"
-        android:background="@color/yp_gray"
-        android:layout_marginBottom="20dp"/>
-
-    <TextView
-        android:id="@+id/TopEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/ViewAbove"
-        android:layout_alignEnd="@id/RightView"
-        android:text="Top End"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:id="@+id/BottomStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@id/LeftView"
-        android:layout_alignBottom="@id/ViewBelow"
-        android:text="Bottom Start"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-    <TextView
-        android:id="@+id/BottomEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/RightView"
-        android:layout_alignBottom="@id/ViewBelow"
-        android:text="Bottom End"
-        android:padding="10dp"
-        android:background="#4CAF50"
-        />
-
-</RelativeLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.playlistmarket
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Looper
 import android.text.format.Formatter
@@ -16,13 +17,37 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import android.os.Handler
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.time.Duration
 
 
 class Test : AppCompatActivity() {
 
     var timerThread: Thread? = null
+    private val timer = Timer(
+        2000,
+        Handler(Looper.getMainLooper())
+    ) {
+        txtViewCurrentTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+    }
+    private lateinit var buttonPlayer : Button
+    private lateinit var txtViewCurrentTime : TextView
+    var url = "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/ac/c7/d1/acc7d13f-6634-495f-caf6-491eccb505e8/mzaf_4002676889906514534.plus.aac.p.m4a"
+    private val mediaPlayer = MediaPlayer()
+    private var statusOfPlayer : CurrentStatusOfPlayer? = null
 
+    private val onPreparedListener = MediaPlayer.OnPreparedListener {
+        statusOfPlayer = CurrentStatusOfPlayer.READY_TO_PLAY
+        buttonPlayer.isEnabled = true
+    }
+
+    private val onCompletionListener = MediaPlayer.OnCompletionListener {
+            timerThread?.interrupt()
+            statusOfPlayer = CurrentStatusOfPlayer.READY_TO_PLAY
+            buttonPlayer.text = "Play"
+            txtViewCurrentTime.text = "00:00"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,66 +57,75 @@ class Test : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val bt = findViewById<Button>(R.id.buttonStart)
-        val txtViewCurrentTime = findViewById<TextView>(R.id.textViewCurrentTime)
-        val editTextTotalTime = findViewById<EditText>(R.id.editTextTotalTime)
+        buttonPlayer = findViewById<Button>(R.id.buttonPlayer)
+        buttonPlayer.isEnabled = false
+        buttonPlayer.setOnClickListener {
+            when (statusOfPlayer) {
+                CurrentStatusOfPlayer.READY_TO_PLAY, CurrentStatusOfPlayer.PAUSE  -> doPlayLogic()
+                CurrentStatusOfPlayer.PLAY -> doPauseLogic()
+                else -> {}
+            }
+        }
+        txtViewCurrentTime = findViewById<TextView>(R.id.textViewCurrentTime)
+
+        statusOfPlayer = CurrentStatusOfPlayer.SET_DATA_SOURCE_NEEDED
+        initMediaPlayer()
+
 
         val myHandler = android.os.Handler(Looper.getMainLooper())
 
 
 
-        bt.setOnClickListener { v ->
 
-            timerThread?.interrupt()
+    }
 
-            if (timerThread == null || !timerThread!!.isAlive) {
-                timerThread = Thread(
-                    TimeWorker(
-                        editTextTotalTime.text.toString().toInt(),
-                        myHandler,
-                        object : TimeWorker.OnTimeWorkerListener {
-                            override fun doOnTick(formatedTime: String) {
-                                txtViewCurrentTime.text = formatedTime
-                            }
+    private fun doPlayLogic() {
+        buttonPlayer.text = "Pause"
+        statusOfPlayer = CurrentStatusOfPlayer.PLAY
+        mediaPlayer.start()
+        timerThread = Thread(timer)
+        timerThread?.start()
+    }
 
-                            override fun doOnFinish() {
-                                txtViewCurrentTime.text = "Done!"
-                            }
-                        }
-                    )
-                )
-                timerThread!!.start()
-            }
+    private fun doPauseLogic() {
+        buttonPlayer.text = "Play"
+        statusOfPlayer = CurrentStatusOfPlayer.PAUSE
+        mediaPlayer.pause()
+        timerThread?.interrupt()
+    }
 
-        }
+    private fun initMediaPlayer() {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.setOnPreparedListener(onPreparedListener)
+        mediaPlayer.setOnCompletionListener(onCompletionListener)
+        mediaPlayer.prepareAsync()
+        statusOfPlayer = CurrentStatusOfPlayer.DATA_SOURCE_SET
     }
 
     companion object{
 
     }
+
+    private enum class CurrentStatusOfPlayer{
+        SET_DATA_SOURCE_NEEDED,
+        DATA_SOURCE_SET,
+        PREPARED,
+        READY_TO_PLAY,
+        PLAY,
+        PAUSE,
+        STOPPED
+    }
 }
 
-class TimeWorker(
-    totalTimeInSeconds: Int,
+class Timer(
+    val tickTimePeriodInMilliseconds: Int,
     val handlerTick: Handler,
-    val callBack: OnTimeWorkerListener
+    val callBack: OnTimeTickListener
 ): Runnable {
-    var currentTime: LocalTime = LocalTime.of(0,0,0)
-    var totalTime = LocalTime.ofSecondOfDay(totalTimeInSeconds.toLong())
-
-    fun getCurrentTimeInString(): String {
-        return currentTime.format(DateTimeFormatter.ofPattern("mm:ss"))
-    }
-
-    fun addOneSecond() {
-        currentTime = currentTime.plusSeconds(1)
-    }
-
     override fun run() {
-        while (totalTime != currentTime && !Thread.currentThread().isInterrupted) {
-            val postTimeInFormat = getCurrentTimeInString()
+        while (!Thread.currentThread().isInterrupted) {
             handlerTick.post {
-                callBack.doOnTick(postTimeInFormat)
+                callBack.doOnTick()
             }
             try {
             Thread.sleep(1000)
@@ -99,19 +133,10 @@ class TimeWorker(
                 Thread.currentThread().interrupt()
                 return
             }
-            addOneSecond()
-        }
-        if (!Thread.currentThread().isInterrupted) {
-            handlerTick.post {
-                callBack.doOnFinish()
-            }
         }
     }
 
-    interface OnTimeWorkerListener{
-        fun doOnTick(formatedTime: String)
-        fun doOnFinish()
+    fun interface OnTimeTickListener{
+        fun doOnTick()
     }
-
-
 }

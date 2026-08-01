@@ -4,12 +4,15 @@ package com.example.playlistmarket
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,10 +32,32 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.Runnable
 
 
 class SearchActivity : AppCompatActivity() {
 
+
+
+    private var onTrackClickAllowed = true
+    private var showedUIStatus: ShowedUIStatus? = null
+        get() = field
+        set(value) {
+            hideAllLogicElements()
+            when (value) {
+                ShowedUIStatus.TRACKS_FROM_SEARCH_UI -> showSearchTrackUI()
+                ShowedUIStatus.ERROR_UI -> showFailPlaceholder()
+                ShowedUIStatus.EMPTY_RESULT_UI -> showEmptyResultPlaceholder()
+                ShowedUIStatus.LOAD_TRACKS_INFO_UI -> showLoadProcessBar()
+                ShowedUIStatus.TRACKS_FROM_HISTORY_UI -> showTracksFromHistoryUI()
+                ShowedUIStatus.All_LOGIC_UI_HIDED -> hideAllLogicElements()
+                else -> hideAllLogicElements()
+
+            }
+            field = value
+        }
+
+    private var mainHandler = Handler(Looper.getMainLooper())
     private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
     private val tracks = mutableListOf<Track>()
     private val viewedTracks = SearchHistoryPreferencesWorker.viewedTracks.toMutableList()
@@ -44,15 +69,18 @@ class SearchActivity : AppCompatActivity() {
     private val onSuccessLoadTrackInfo = ITunesSearchAPIWorker.OnResponseReactable { tracks ->
         updateTrackViewModel(tracks)
         if (this.tracks.isEmpty()) {
-            showEmptyResultPlaceholder()
+            showedUIStatus = ShowedUIStatus.EMPTY_RESULT_UI
         }
     }
     private val onFailLoadTrackInfo = ITunesSearchAPIWorker.OnFailureReactable {
-        showFailPlaceholder()
+        showedUIStatus = ShowedUIStatus.ERROR_UI
     }
+
+    private val searchTracksInfoRunnable = Runnable { loadTrackInfo() }
 
 
     private lateinit var rvTracks : RecyclerView
+    private lateinit var progressBarLoadTracksInfo : ProgressBar
     private lateinit var headerToolbar : MaterialToolbar
     private lateinit var searchTextInput : TextInputLayout
     private lateinit var searchEditText : TextInputEditText
@@ -71,6 +99,7 @@ class SearchActivity : AppCompatActivity() {
             itunesTrack.toTrackModel(this)
         }
         rvTracks.adapter?.notifyDataSetChanged()
+        showedUIStatus = ShowedUIStatus.TRACKS_FROM_SEARCH_UI
     }
 
     private fun showEmptyResultPlaceholder() {
@@ -105,6 +134,7 @@ class SearchActivity : AppCompatActivity() {
         initLayoutSearchHistory()
         initRvViewedTracks()
         initButtonClearHistory()
+        initProgressBarLoadTracksInfo()
         if (savedInstanceState != null) {
             loadSearchStringInTextInput(
                 savedInstanceState.getString(
@@ -113,13 +143,18 @@ class SearchActivity : AppCompatActivity() {
             )
         }
 
+        showedUIStatus = ShowedUIStatus.All_LOGIC_UI_HIDED
+
 
 
     }
 
+    private fun initProgressBarLoadTracksInfo() {
+        progressBarLoadTracksInfo = findViewById(R.id.progressBarLoadTracksInfo)
+    }
+
     private fun initLayoutSearchHistory() {
         layoutSearchHistory = findViewById(R.id.layout_search_history)
-        layoutSearchHistory.visibility = View.GONE
     }
 
     private fun initRvViewedTracks() {
@@ -147,17 +182,15 @@ class SearchActivity : AppCompatActivity() {
 
     private fun executeHistorySearchLogic(currentSearchText: String = searchEditText.text.toString()) {
         if (searchEditText.hasFocus() && currentSearchText.isEmpty() && !viewedTracks.isEmpty()) {
-            layoutSearchHistory.visibility = View.VISIBLE
+            showedUIStatus = ShowedUIStatus.TRACKS_FROM_HISTORY_UI
         } else {
-            layoutSearchHistory.visibility = View.GONE
+            showedUIStatus = ShowedUIStatus.TRACKS_FROM_SEARCH_UI
         }
     }
 
     fun initAllPlaceholders() {
         emptyResultPlaceholder = findViewById(R.id.empty_result_placeholder)
         failLoadPlaceholder = findViewById(R.id.fail_load_placeholder)
-        emptyResultPlaceholder.visibility = View.GONE
-        failLoadPlaceholder.visibility = View.GONE
     }
 
     fun initRvTracks() {
@@ -166,8 +199,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onTrackClick(track: Track) {
-        addViewedTrack(track)
-        startMusicPlayer(track)
+        if (onTrackClickDebounce()) {
+            addViewedTrack(track)
+            startMusicPlayer(track)
+        }
     }
 
     private fun startMusicPlayer(track: Track) {
@@ -218,9 +253,16 @@ class SearchActivity : AppCompatActivity() {
         searchEditText.addTextChangedListener(
             object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    mainHandler.removeCallbacks(searchTracksInfoRunnable)
                     inputTextSearch = searchEditText.text.toString().trim()
                     if (inputTextSearch.isEmpty()) {
                         resetViewModel()
+                        executeHistorySearchLogic()
+                    } else {
+                        mainHandler.postDelayed(
+                            searchTracksInfoRunnable,
+                            DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST_ON_ITunesSearchAPI
+                        )
                     }
                 }
                 override fun beforeTextChanged(
@@ -246,7 +288,7 @@ class SearchActivity : AppCompatActivity() {
 
     fun loadTrackInfo() {
         resetViewModel()
-        resetAllPlaceholders()
+        showedUIStatus = ShowedUIStatus.LOAD_TRACKS_INFO_UI
         itunesWorker.getData(
             inputTextSearch,
             onSuccessLoadTrackInfo,
@@ -255,14 +297,16 @@ class SearchActivity : AppCompatActivity() {
 
     fun resetAllSearchItems() {
         clearEditText()
-        resetAllPlaceholders()
+        showedUIStatus = ShowedUIStatus.All_LOGIC_UI_HIDED
         resetViewModel()
     }
 
-    fun resetAllPlaceholders() {
+    fun hideAllLogicElements() {
         emptyResultPlaceholder.visibility = View.GONE
         failLoadPlaceholder.visibility = View.GONE
         layoutSearchHistory.visibility = View.GONE
+        rvTracks.visibility = View.GONE
+        progressBarLoadTracksInfo.visibility = View.GONE
     }
 
     fun resetViewModel() {
@@ -307,6 +351,17 @@ class SearchActivity : AppCompatActivity() {
         executeHistorySearchLogic()
     }
 
+    private fun showTracksFromHistoryUI() {
+        layoutSearchHistory.visibility = View.VISIBLE
+    }
+
+    private fun showSearchTrackUI() {
+        rvTracks.visibility = View.VISIBLE
+    }
+
+    private fun showLoadProcessBar() {
+        progressBarLoadTracksInfo.visibility = View.VISIBLE
+    }
     override fun onStart() {
         super.onStart()
         SearchHistoryPreferencesWorker.registerListener(onSearchHistoryChangeListener)
@@ -318,9 +373,33 @@ class SearchActivity : AppCompatActivity() {
         SearchHistoryPreferencesWorker.unregisterListener(onSearchHistoryChangeListener)
     }
 
+    fun onTrackClickDebounce(): Boolean {
+        val current = onTrackClickAllowed
+        if (onTrackClickAllowed) {
+
+            onTrackClickAllowed = false
+            mainHandler.postDelayed({onTrackClickAllowed = true}, DEBOUNCE_MILLISECOND_TIME_TO_CLICK_ON_TRACK)
+
+        }
+        return current
+    }
+
     companion object {
         const val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
         const val DEFAULT_TEXT_FOR_SEARCH: String = ""
 
+        const val DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST_ON_ITunesSearchAPI: Long = 2000
+
+        const val DEBOUNCE_MILLISECOND_TIME_TO_CLICK_ON_TRACK: Long = 1000
+
+    }
+
+    private enum class ShowedUIStatus {
+        TRACKS_FROM_SEARCH_UI,
+        TRACKS_FROM_HISTORY_UI,
+        EMPTY_RESULT_UI,
+        ERROR_UI,
+        LOAD_TRACKS_INFO_UI,
+        All_LOGIC_UI_HIDED
     }
 }

@@ -1,7 +1,6 @@
 package com.example.playlistmarket.utils
 
 import android.content.Context
-import android.icu.text.SimpleDateFormat
 import android.util.TypedValue
 import com.example.playlistmarket.ITunesSearchAPI.TrackInfo
 import com.example.playlistmarket.R
@@ -9,12 +8,17 @@ import com.example.playlistmarket.TrackModel.Track
 import java.util.Locale
 import kotlin.String
 import kotlin.random.Random
+import java.text.SimpleDateFormat
 
 fun dpToPx(dp: Float, context: Context): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp,
         context.resources.displayMetrics).toInt()
+}
+
+fun convertMillisecondsInNeededStringFormat(milliseconds: Long, format: String = "mm:ss"): String {
+    return SimpleDateFormat(format, Locale.getDefault()).format(milliseconds)
 }
 
 fun TrackInfo.toTrackModel(context: Context): Track {
@@ -28,7 +32,8 @@ fun TrackInfo.toTrackModel(context: Context): Track {
         collectionName = collectionName ?: "",
         releaseDate = releaseDate ?: "",
         primaryGenreName = primaryGenreName ?: "",
-        country = country ?: ""
+        country = country ?: "",
+        previewUrl = previewUrl ?: ""
     )
     return trackModel
 }

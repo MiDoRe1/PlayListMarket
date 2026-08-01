@@ -68,6 +68,14 @@
         android:layout_marginHorizontal="16dp"
         >
 
+        <ProgressBar
+            android:id="@+id/progressBarLoadTracksInfo"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/yp_blue"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_tracks"
             android:layout_width="match_parent"

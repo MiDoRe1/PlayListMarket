@@ -1,6 +1,9 @@
 package com.example.playlistmarket
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,11 +15,27 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.TrackModel.Track
+import com.example.playlistmarket.utils.MediaPlayerWorker
+import com.example.playlistmarket.utils.convertMillisecondsInNeededStringFormat
 import com.example.playlistmarket.utils.dpToPx
 import com.google.gson.Gson
+import com.example.playlistmarket.utils.Timer
 
 class MusicPlayActivity : AppCompatActivity() {
 
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private lateinit var  timer : Timer
+
+    private lateinit var mediaPlayerWorker : MediaPlayerWorker
+
+    private val onPreparedListener = MediaPlayer.OnPreparedListener {
+        buttonPlay.isEnabled = true
+        showPlayButton()
+    }
+    private val onCompletionListener = MediaPlayer.OnCompletionListener {
+        showPlayButton()
+    }
     private lateinit var currentTrack: Track
     private lateinit var imgTrackIcon : ImageView
     private lateinit var textViewTrackName : TextView
@@ -27,6 +46,10 @@ class MusicPlayActivity : AppCompatActivity() {
     private lateinit var textViewTrackGenreValue : TextView
     private lateinit var textViewTrackCountryValue : TextView
     private lateinit var buttonReturn : ImageView
+
+    private lateinit var buttonPlay : ImageView
+
+    private lateinit var textViewCurrentTimeOfTrack : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +67,72 @@ class MusicPlayActivity : AppCompatActivity() {
         initTrackIcon()
         initTrackInformation()
         initButtonReturn()
+        initTextViewCurrentTimeOfTrack()
+        initButtonPlay()
+        initMediaPlayerWorker()
+        initTimer()
+    }
+
+    private fun initTimer() {
+        timer = Timer(
+            TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER,
+            mainHandler
+        ) {
+            textViewCurrentTimeOfTrack.text = convertMillisecondsInNeededStringFormat(
+                mediaPlayerWorker.currentPosition.toLong()
+            )
+        }
+    }
+
+    private fun initMediaPlayerWorker() {
+        mediaPlayerWorker = MediaPlayerWorker(
+            onPreparedListener,
+            onCompletionListener
+        )
+        mediaPlayerWorker.setDataSource(currentTrack.previewUrl)
+        mediaPlayerWorker.prepareAsync()
+    }
+
+    private fun initButtonPlay() {
+        buttonPlay = findViewById(R.id.buttonPlay)
+        buttonPlay.isEnabled = false
+        buttonPlay.setOnClickListener {
+            when (mediaPlayerWorker.status) {
+                MediaPlayerWorker.CurrentStatusOfPlayer.PREPARED,
+                MediaPlayerWorker.CurrentStatusOfPlayer.PAUSE -> {
+                    doPlayLogic()
+                }
+
+                MediaPlayerWorker.CurrentStatusOfPlayer.PLAY -> {
+                    doPauseLogic()
+                }
+                else -> {}
+            }
+        }
+    }
+
+
+    private fun doPlayLogic() {
+        showPauseButton()
+        mediaPlayerWorker.play()
+        timer.start()
+    }
+
+    private fun doPauseLogic() {
+        showPlayButton()
+        mediaPlayerWorker.pause()
+        timer.stop()
+    }
+
+    private fun showPauseButton() {
+        buttonPlay.setImageResource(R.drawable.ic_pause)
+    }
+
+    private fun showPlayButton() {
+        buttonPlay.setImageResource(R.drawable.ic_play)
+    }
+    private fun initTextViewCurrentTimeOfTrack() {
+        textViewCurrentTimeOfTrack = findViewById(R.id.textViewCurrentTimeOfTrack)
     }
 
     private fun initTrackIcon() {
@@ -88,7 +177,20 @@ class MusicPlayActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        doPauseLogic()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.stop()
+        mediaPlayerWorker.resume()
+    }
+
     companion object{
         val JSON_FORMAT_TRACK_KEY : String = "trackInJsonFormat"
+        val TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER = 1000L
+
     }
 }

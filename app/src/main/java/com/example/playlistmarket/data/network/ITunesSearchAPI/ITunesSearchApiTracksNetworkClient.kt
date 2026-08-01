@@ -1,18 +1,21 @@
-package com.example.playlistmarket.ITunesSearchAPI
+package com.example.playlistmarket.data.network.ITunesSearchAPI
 
 
 
-import okhttp3.ResponseBody
+import com.example.playlistmarket.data.TracksNetworkClient
+import com.example.playlistmarket.data.dto.TrackInfoRequest
+import com.example.playlistmarket.data.dto.TrackInfoResponse
+import com.example.playlistmarket.data.dto.Response as dtoResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import retrofit2.http.GET
-import retrofit2.http.Query
 
-class ITunesSearchAPIWorker(baseUrl: String = DEFAULT_URL_ITUNES) {
+class ITunesSearchApiTracksNetworkClient(
+    val baseUrl: String = DEFAULT_URL_ITUNES
+): TracksNetworkClient {
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
@@ -20,12 +23,12 @@ class ITunesSearchAPIWorker(baseUrl: String = DEFAULT_URL_ITUNES) {
 
     private  val iTunesService = retrofit.create<ITunesSearchAPIInterface>()
 
-    fun getData(
-        name: String,
-        outerOnRespone: OnResponseReactable,
+    fun asynGetData(
+        request: TrackInfoRequest,
+        outerOnResponse: OnResponseReactable,
         outerOnFailure: OnFailureReactable
     ){
-        iTunesService.getTracks(name).
+        iTunesService.getTracks(request.expression).
         enqueue(object: Callback<TrackInfoResponse>{
             override fun onResponse(
                 call: Call<TrackInfoResponse?>,
@@ -33,7 +36,7 @@ class ITunesSearchAPIWorker(baseUrl: String = DEFAULT_URL_ITUNES) {
             ) {
 
                 when (response.code()) {
-                    200 -> outerOnRespone.doOnResponse(response.body())
+                    200 -> outerOnResponse.doOnResponse(response.body())
                     else -> outerOnFailure.doOnFailure()
                 }
 
@@ -49,6 +52,15 @@ class ITunesSearchAPIWorker(baseUrl: String = DEFAULT_URL_ITUNES) {
         })
     }
 
+    override fun doRequest(dto: Any): dtoResponse {
+        if (dto is TrackInfoRequest) {
+            val resp = iTunesService.getTracks(dto.expression).execute()
+            val body = resp.body() ?: dtoResponse()
+            return body.apply { resultCode = resp.code() }
+        } else {
+            return dtoResponse().apply { resultCode = 400 }
+        }
+    }
     fun interface OnResponseReactable {
         fun doOnResponse(tracksData: TrackInfoResponse?)
     }

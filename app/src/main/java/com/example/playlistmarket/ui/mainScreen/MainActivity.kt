@@ -1,17 +1,20 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.mainScreen
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.example.playlistmarket.R
+import com.example.playlistmarket.ui.libraryScreen.LibraryActivity
+import com.example.playlistmarket.ui.searchScreen.SearchActivity
+import com.example.playlistmarket.ui.settingsScreen.SettingsActivity
 import com.google.android.material.button.MaterialButton
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

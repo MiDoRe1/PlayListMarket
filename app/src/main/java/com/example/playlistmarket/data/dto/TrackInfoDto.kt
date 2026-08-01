@@ -1,6 +1,6 @@
-package com.example.playlistmarket.ITunesSearchAPI
+package com.example.playlistmarket.data.dto
 
-class TrackInfo (
+class TrackInfoDto (
     val trackId: Long?,
     val trackName: String?,
     val artistName: String?,

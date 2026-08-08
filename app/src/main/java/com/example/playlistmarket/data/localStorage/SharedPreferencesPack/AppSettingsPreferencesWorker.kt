@@ -1,11 +1,15 @@
-package com.example.playlistmarket.SharedPreferencesPack
+package com.example.playlistmarket.data.localStorage.SharedPreferencesPack
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import kotlin.coroutines.Continuation
+import com.example.playlistmarket.data.LocalStorageWorker
+import com.example.playlistmarket.domain.api.OnChangesRegisterable
 
-object AppSettingsPreferencesWorker {
+object AppSettingsPreferencesWorker: LocalStorageWorker<Boolean> {
+
+    private val listenersMap = mutableMapOf<OnChangesRegisterable.Listener, SharedPreferences.OnSharedPreferenceChangeListener>()
+
     private const val PREF_NAME = "app_settings"
     const val KEY_THEME = "current_theme"
     const val DEFAULT_IS_DARK_THEME_ENABLED = false
@@ -39,5 +43,30 @@ object AppSettingsPreferencesWorker {
 
     fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         preferences.unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    override fun getData(): Boolean {
+        return isDarkThemeEnabled
+    }
+
+    override fun saveData(dto: Boolean) {
+        isDarkThemeEnabled = dto
+    }
+
+    override fun registerOnChanges(listener: OnChangesRegisterable.Listener) {
+        val androidListener = SharedPreferences.OnSharedPreferenceChangeListener {
+            _, key ->
+            if (key == KEY_THEME) listener.callback()
+        }
+
+        listenersMap[listener] = androidListener
+        preferences.registerOnSharedPreferenceChangeListener(androidListener)
+    }
+
+    override fun unregisterOnChanges(listener: OnChangesRegisterable.Listener) {
+        val androidListener = listenersMap.remove(listener)
+        if (androidListener != null) {
+            preferences.unregisterOnSharedPreferenceChangeListener(androidListener)
+        }
     }
 }

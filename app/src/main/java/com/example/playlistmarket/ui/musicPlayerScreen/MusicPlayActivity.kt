@@ -1,12 +1,12 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.musicPlayerScreen
 
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,12 +14,12 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmarket.TrackModel.Track
+import com.example.playlistmarket.R
+import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.utils.MediaPlayerWorker
-import com.example.playlistmarket.utils.convertMillisecondsInNeededStringFormat
-import com.example.playlistmarket.utils.dpToPx
-import com.google.gson.Gson
 import com.example.playlistmarket.utils.Timer
+import com.example.playlistmarket.utils.convertMillisecondsInNeededStringFormat
+import com.google.gson.Gson
 
 class MusicPlayActivity : AppCompatActivity() {
 
@@ -85,12 +85,18 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
     private fun initMediaPlayerWorker() {
-        mediaPlayerWorker = MediaPlayerWorker(
-            onPreparedListener,
-            onCompletionListener
-        )
-        mediaPlayerWorker.setDataSource(currentTrack.previewUrl)
-        mediaPlayerWorker.prepareAsync()
+        try {
+            mediaPlayerWorker = MediaPlayerWorker(
+                onPreparedListener,
+                onCompletionListener
+            )
+            mediaPlayerWorker.setDataSource(currentTrack.previewUrl)
+            mediaPlayerWorker.prepareAsync()
+        } catch (e: Exception) {
+            Toast.makeText(this,
+                "Empty url from API : ${currentTrack.previewUrl}",
+                Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun initButtonPlay() {

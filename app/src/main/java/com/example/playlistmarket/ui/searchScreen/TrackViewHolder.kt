@@ -1,4 +1,4 @@
-package com.example.playlistmarket.TrackModel
+package com.example.playlistmarket.ui.searchScreen
 
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.R
+import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.utils.dpToPx
 
 class TrackViewHolder(

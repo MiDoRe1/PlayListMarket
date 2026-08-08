@@ -2,9 +2,9 @@ package com.example.playlistmarket.utils
 
 import android.content.Context
 import android.util.TypedValue
-import com.example.playlistmarket.ITunesSearchAPI.TrackInfo
+import com.example.playlistmarket.data.dto.TrackInfoDto
 import com.example.playlistmarket.R
-import com.example.playlistmarket.TrackModel.Track
+import com.example.playlistmarket.domain.models.Track
 import java.util.Locale
 import kotlin.String
 import kotlin.random.Random
@@ -21,7 +21,7 @@ fun convertMillisecondsInNeededStringFormat(milliseconds: Long, format: String =
     return SimpleDateFormat(format, Locale.getDefault()).format(milliseconds)
 }
 
-fun TrackInfo.toTrackModel(context: Context): Track {
+fun TrackInfoDto.toTrackModel(context: Context): Track {
     val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
     val trackModel = Track(
         trackId = trackId ?: Random.nextLong(Long.MIN_VALUE, -3),

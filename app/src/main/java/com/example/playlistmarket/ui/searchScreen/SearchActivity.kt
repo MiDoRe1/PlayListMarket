@@ -1,6 +1,10 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.searchScreen
 
 
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,6 +13,7 @@ import android.os.Looper
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
@@ -17,28 +22,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmarket.ITunesSearchAPI.ITunesSearchAPIWorker
-import com.example.playlistmarket.ITunesSearchAPI.TrackInfoResponse
-import com.example.playlistmarket.SharedPreferencesPack.SearchHistoryPreferencesWorker
-import com.example.playlistmarket.TrackModel.Track
-import com.example.playlistmarket.TrackModel.TrackAdapter
-import com.example.playlistmarket.utils.toTrackModel
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.example.playlistmarket.Creator
+import com.example.playlistmarket.R
+import com.example.playlistmarket.data.network.ITunesSearchAPI.ITunesSearchApiTracksNetworkClient
+import com.example.playlistmarket.domain.api.OnChangesRegisterable
+import com.example.playlistmarket.domain.api.TracksInteractor
+import com.example.playlistmarket.domain.models.Track
+import com.example.playlistmarket.ui.musicPlayerScreen.MusicPlayActivity
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import kotlinx.coroutines.Runnable
-
 
 class SearchActivity : AppCompatActivity() {
 
 
 
+    private var tracksInteractor = Creator.provideTracksInteractor()
     private var onTrackClickAllowed = true
     private var showedUIStatus: ShowedUIStatus? = null
         get() = field
@@ -59,20 +58,27 @@ class SearchActivity : AppCompatActivity() {
 
     private var mainHandler = Handler(Looper.getMainLooper())
     private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
-    private val tracks = mutableListOf<Track>()
-    private val viewedTracks = SearchHistoryPreferencesWorker.viewedTracks.toMutableList()
-    val onSearchHistoryChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
-        ref, key ->
-        updateViewedTracks()
-    }
-    private val itunesWorker = ITunesSearchAPIWorker()
-    private val onSuccessLoadTrackInfo = ITunesSearchAPIWorker.OnResponseReactable { tracks ->
-        updateTrackViewModel(tracks)
-        if (this.tracks.isEmpty()) {
-            showedUIStatus = ShowedUIStatus.EMPTY_RESULT_UI
+    private var tracks = mutableListOf<Track>()
+    private val viewedTracks = mutableListOf<Track>()
+        //TracksHistoryPreferencesWorker.viewedTracks.toMutableList()
+    val onSearchHistoryChangeListener = OnChangesRegisterable.Listener {
+            mainHandler.post { updateViewedTracks() }
         }
+
+    private val itunesWorker = ITunesSearchApiTracksNetworkClient()
+    private val onSuccessLoadTrackInfo = TracksInteractor.TracksConsumer {
+        tracksFromDomain ->
+        mainHandler.post {
+            Log.d("chuita", "Функция searchTracks вызвана с поисковым запросом:")
+            updateTrackViewModel(tracksFromDomain)
+            if (this.tracks.isEmpty()) {
+                showedUIStatus = ShowedUIStatus.EMPTY_RESULT_UI
+            }
+        }
+
     }
-    private val onFailLoadTrackInfo = ITunesSearchAPIWorker.OnFailureReactable {
+
+    private val onFailLoadTrackInfo = ITunesSearchApiTracksNetworkClient.OnFailureReactable {
         showedUIStatus = ShowedUIStatus.ERROR_UI
     }
 
@@ -93,11 +99,9 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-    private fun updateTrackViewModel(itunesTracks: TrackInfoResponse?)  {
+    private fun updateTrackViewModel(tracksFromDomain: List<Track>)  {
         tracks.clear()
-        itunesTracks?.results?.mapTo(tracks) { itunesTrack ->
-            itunesTrack.toTrackModel(this)
-        }
+        tracks.addAll(tracksFromDomain)
         rvTracks.adapter?.notifyDataSetChanged()
         showedUIStatus = ShowedUIStatus.TRACKS_FROM_SEARCH_UI
     }
@@ -170,13 +174,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun addViewedTrack(track: Track) {
-        SearchHistoryPreferencesWorker.addTrack(track)
+        tracksInteractor.insertTrackInTracksHistory(track)
     }
 
     private fun initButtonClearHistory() {
         buttonClearHistory = findViewById(R.id.button_clear_history)
         buttonClearHistory.setOnClickListener {
-            SearchHistoryPreferencesWorker.clearSearchTrackHistory()
+            tracksInteractor.clearTracksHistory()
         }
     }
 
@@ -208,7 +212,7 @@ class SearchActivity : AppCompatActivity() {
     private fun startMusicPlayer(track: Track) {
         val musicPlayerIntent = Intent(this@SearchActivity, MusicPlayActivity::class.java)
         musicPlayerIntent.putExtra(
-            MusicPlayActivity.JSON_FORMAT_TRACK_KEY,
+            MusicPlayActivity.Companion.JSON_FORMAT_TRACK_KEY,
             Gson().toJson(track)
         )
         startActivity(musicPlayerIntent)
@@ -261,7 +265,7 @@ class SearchActivity : AppCompatActivity() {
                     } else {
                         mainHandler.postDelayed(
                             searchTracksInfoRunnable,
-                            DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST_ON_ITunesSearchAPI
+                            DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST
                         )
                     }
                 }
@@ -289,10 +293,13 @@ class SearchActivity : AppCompatActivity() {
     fun loadTrackInfo() {
         resetViewModel()
         showedUIStatus = ShowedUIStatus.LOAD_TRACKS_INFO_UI
-        itunesWorker.getData(
+        tracksInteractor.searchTracks(
             inputTextSearch,
             onSuccessLoadTrackInfo,
-            onFailLoadTrackInfo)
+            {
+                mainHandler.post { showedUIStatus = ShowedUIStatus.ERROR_UI }
+            }
+        )
     }
 
     fun resetAllSearchItems() {
@@ -310,7 +317,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun resetViewModel() {
-        updateTrackViewModel(null)
+        updateTrackViewModel(emptyList())
     }
 
     fun clearEditText() {
@@ -343,12 +350,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateViewedTracks() {
-        viewedTracks.clear()
-        viewedTracks.addAll(
-            SearchHistoryPreferencesWorker.viewedTracks.toMutableList()
-        )
-        rvViewedTracks.adapter?.notifyDataSetChanged()
-        executeHistorySearchLogic()
+        tracksInteractor.getTracksHistory{ tracks ->
+            mainHandler.post {
+                viewedTracks.clear()
+                viewedTracks.addAll(tracks)
+                rvViewedTracks.adapter?.notifyDataSetChanged()
+                executeHistorySearchLogic()
+            }
+        }
     }
 
     private fun showTracksFromHistoryUI() {
@@ -364,13 +373,13 @@ class SearchActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        SearchHistoryPreferencesWorker.registerListener(onSearchHistoryChangeListener)
+        tracksInteractor.registerOnChanges(onSearchHistoryChangeListener)
         updateViewedTracks()
     }
 
     override fun onStop() {
         super.onStop()
-        SearchHistoryPreferencesWorker.unregisterListener(onSearchHistoryChangeListener)
+        tracksInteractor.unregisterOnChanges(onSearchHistoryChangeListener)
     }
 
     fun onTrackClickDebounce(): Boolean {
@@ -388,7 +397,7 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
         const val DEFAULT_TEXT_FOR_SEARCH: String = ""
 
-        const val DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST_ON_ITunesSearchAPI: Long = 2000
+        const val DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST: Long = 2000
 
         const val DEBOUNCE_MILLISECOND_TIME_TO_CLICK_ON_TRACK: Long = 1000
 

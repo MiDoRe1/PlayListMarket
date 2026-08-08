@@ -1,4 +1,4 @@
-package com.example.playlistmarket.TrackModel
+package com.example.playlistmarket.domain.models
 
 data class Track(
     val trackId: Long,

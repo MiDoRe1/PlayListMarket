@@ -1,7 +1,8 @@
-package com.example.playlistmarket.TrackModel
+package com.example.playlistmarket.ui.searchScreen
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmarket.domain.models.Track
 
 class TrackAdapter(
     private val tracks: List<Track>,
@@ -11,8 +12,7 @@ class TrackAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TrackViewHolder =  TrackViewHolder(parent) {
-        position ->
+    ): TrackViewHolder = TrackViewHolder(parent) { position ->
         val track = tracks[position]
         onTrackClick(track)
     }

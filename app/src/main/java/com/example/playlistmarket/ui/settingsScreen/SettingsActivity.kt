@@ -1,5 +1,6 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.settingsScreen
 
+import com.google.android.material.appbar.MaterialToolbar
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -9,12 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import com.example.playlistmarket.SharedPreferencesPack.AppSettingsPreferencesWorker
-import com.google.android.material.appbar.MaterialToolbar
+import com.example.playlistmarket.Creator
+import com.example.playlistmarket.R
+import com.example.playlistmarket.data.localStorage.SharedPreferencesPack.AppSettingsPreferencesWorker
+import com.example.playlistmarket.domain.api.OnChangesRegisterable
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
+
+    private val settingsInteractor = Creator.provideSettingsInteractor()
 
     private lateinit var settingsToolBar: MaterialToolbar
     private lateinit var buttonShareApp: MaterialTextView
@@ -23,12 +28,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var switchBlackTheme: SwitchMaterial
 
     private val themeChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
-            if (key == AppSettingsPreferencesWorker.KEY_THEME) {
-                if (switchBlackTheme.isChecked != AppSettingsPreferencesWorker.isDarkThemeEnabled) {
-                    switchBlackTheme.isChecked = AppSettingsPreferencesWorker.isDarkThemeEnabled
+        OnChangesRegisterable.Listener {
+                if (switchBlackTheme.isChecked != settingsInteractor.isDarkThemeEnabled()) {
+                    switchBlackTheme.isChecked = settingsInteractor.isDarkThemeEnabled()
                 }
-            }
         }
 
 
@@ -105,19 +108,19 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun initSwitchBlackTheme() {
         switchBlackTheme = findViewById(R.id.switchBlackTheme)
-        switchBlackTheme.isChecked = AppSettingsPreferencesWorker.isDarkThemeEnabled
+        switchBlackTheme.isChecked = settingsInteractor.isDarkThemeEnabled()
         switchBlackTheme.setOnCheckedChangeListener { _, checked ->
-            AppSettingsPreferencesWorker.isDarkThemeEnabled = checked
+            settingsInteractor.setDarkThemeEnabledValue(checked)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        AppSettingsPreferencesWorker.registerListener(themeChangeListener)
+        settingsInteractor.registerOnChanges(themeChangeListener)
     }
 
     override fun onStop() {
         super.onStop()
-        AppSettingsPreferencesWorker.unregisterListener(themeChangeListener)
+        settingsInteractor.unregisterOnChanges(themeChangeListener)
     }
 }

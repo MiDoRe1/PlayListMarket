@@ -19,19 +19,23 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
     private lateinit var  timer : Timer
     private lateinit var mediaPlayerWorker : MediaPlayerWorker
 
+    private var currentTrackTime: String = INIT_TRACK_TIME
+
     private val onPreparedListener = MediaPlayer.OnPreparedListener {
-        playerStatus.postValue(State.ReadyToPlay)
+        currentTrackTime = INIT_TRACK_TIME
+        playerStatus.postValue(State.ReadyToPlay(currentTrackTime))
     }
 
     private val onCompletionListener = MediaPlayer.OnCompletionListener {
-        playerStatus.postValue(State.ReadyToPlay)
+        currentTrackTime = INIT_TRACK_TIME
+        playerStatus.postValue(State.ReadyToPlay(currentTrackTime))
     }
 
     private val callbackForTimer = Timer.OnTimeTickListener {
         if (playerStatus.value is State.Playing) {
             val currentTime = mediaPlayerWorker.currentPosition
-            val currentTimeToString = convertMillisecondsInNeededStringFormat(currentTime.toLong())
-            timeLiveData.postValue(currentTimeToString)
+            currentTrackTime = convertMillisecondsInNeededStringFormat(currentTime.toLong())
+            playerStatus.postValue(State.Playing(currentTrackTime))
         }
     }
 
@@ -50,10 +54,6 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
         )
     }
 
-
-    private val timeLiveData = MutableLiveData<String>("00:00")
-    fun observeTimeLiveData(): LiveData<String> = timeLiveData
-
     private val playerStatus = MutableLiveData<State>(State.Initialization)
     fun observePlayerStatus(): LiveData<State> = playerStatus
 
@@ -68,7 +68,7 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
     private fun playMusic() {
         mediaPlayerWorker.play()
         if (mediaPlayerWorker.status == MediaPlayerWorker.CurrentStatusOfPlayer.PLAY) {
-            playerStatus.postValue(State.Playing)
+            playerStatus.postValue(State.Playing(currentTrackTime))
             timer.start()
         }
     }
@@ -76,7 +76,7 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
     private fun pauseMusic() {
         mediaPlayerWorker.pause()
         if (mediaPlayerWorker.status == MediaPlayerWorker.CurrentStatusOfPlayer.PAUSE) {
-            playerStatus.postValue(State.ReadyToPlay)
+            playerStatus.postValue(State.ReadyToPlay(currentTrackTime))
             timer.stop()
         }
     }
@@ -95,6 +95,7 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
 
         companion object {
             val TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER = 1000L
+            val INIT_TRACK_TIME = "00:00"
 
             fun getFactory(url: String) : ViewModelProvider.Factory = viewModelFactory {
                 initializer {

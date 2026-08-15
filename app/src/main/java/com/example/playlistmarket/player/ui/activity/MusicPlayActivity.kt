@@ -46,10 +46,6 @@ class MusicPlayActivity : AppCompatActivity() {
             MusicPlayViewModel.getFactory(currentTrack.previewUrl)
         ).get(MusicPlayViewModel::class.java)
 
-        viewModel.observeTimeLiveData().observe(this) {
-            binding.textViewCurrentTimeOfTrack.text = it
-        }
-
         viewModel.observePlayerStatus().observe(this) {
             when (it) {
                 is State.Initialization -> {
@@ -57,9 +53,11 @@ class MusicPlayActivity : AppCompatActivity() {
                 }
                 is State.Playing -> {
                     showPauseButton()
+                    binding.textViewCurrentTimeOfTrack.text = it.timeOfTrack
                 }
                 is State.ReadyToPlay -> {
                     showPlayButton()
+                    binding.textViewCurrentTimeOfTrack.text = it.timeOfTrack
                 }
                 is State.Pause -> {
                     showPlayButton()

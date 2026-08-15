@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".ui.PlayListMarketApp"
+        android:name=".PlayListMarketApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlayListMarket">
         <activity
-            android:name=".ui.musicPlayerScreen.MusicPlayActivity"
+            android:name=".player.ui.activity.MusicPlayActivity"
             android:exported="false"
             android:theme="@style/SecondaryMain"/>
         <activity
@@ -23,18 +23,15 @@
             android:exported="false">
         </activity>
         <activity
-            android:name=".ui.libraryScreen.LibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.searchScreen.SearchActivity"
+            android:name=".search.ui.activity.SearchActivity"
             android:exported="false"
             android:theme="@style/SecondaryMain" />
         <activity
-            android:name=".ui.settingsScreen.SettingsActivity"
+            android:name=".settings.ui.activity.SettingsActivity"
             android:exported="false"
             android:theme="@style/SecondaryMain" />
         <activity
-            android:name=".ui.mainScreen.MainActivity"
+            android:name=".main.ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.PlayListMarket">
             <intent-filter>

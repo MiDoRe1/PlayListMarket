@@ -1,24 +1,18 @@
 package com.example.playlistmarket.search.ui.activity
 
 
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
+
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.ActivitySearchBinding
 import com.example.playlistmarket.search.domain.models.Track
@@ -137,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun initButtonTryAgain() {
-        binding.buttonTryAgain.setOnClickListener { view ->
+        binding.buttonTryAgain.setOnClickListener { _ ->
             viewModel.findTracks(inputTextSearch)
         }
     }
@@ -148,32 +142,18 @@ class SearchActivity : AppCompatActivity() {
             binding.searchEditText.clearFocus()
         }
 
-        binding.searchEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus == true) {
                 inputTextSearch = binding.searchEditText.text.toString().trim()
                 viewModel.findTracks(inputTextSearch)
             }
         }
 
-        binding.searchEditText.addTextChangedListener(
-            object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    inputTextSearch = binding.searchEditText.text.toString().trim()
-                    viewModel.findTracks(inputTextSearch)
-                }
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {}
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {}
-            })
+        binding.searchEditText.addTextChangedListener {
+            inputTextSearch = binding.searchEditText.text.toString().trim()
+            viewModel.findTracks(inputTextSearch)
+        }
+
     }
 
     fun hideAllLogicElements() {

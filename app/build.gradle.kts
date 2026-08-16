@@ -39,7 +39,10 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
+
+
 }
 
 dependencies {
@@ -67,4 +70,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.code.gson:gson:2.10")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 }

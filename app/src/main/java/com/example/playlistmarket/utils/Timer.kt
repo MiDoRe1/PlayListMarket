@@ -1,24 +1,38 @@
 package com.example.playlistmarket.utils
 
 import android.os.Handler
+import android.os.HandlerThread
+import kotlinx.coroutines.Runnable
 
 class Timer(
     val tickTimePeriodInMilliseconds: Long,
-    val handlerTick: Handler,
     val callBack: OnTimeTickListener
-): Runnable {
-    override fun run() {
-        callBack.doOnTick()
-        handlerTick.postDelayed(this, tickTimePeriodInMilliseconds)
+) {
+
+    private val tick = object : Runnable {
+        override fun run() {
+            callBack.doOnTick()
+            handler.postDelayed(this, tickTimePeriodInMilliseconds)
+        }
     }
 
+    private val thread = HandlerThread(this.toString()).apply {
+        start()
+    }
+
+    private val handler = Handler(thread.looper)
     fun start() {
         stop()
-        handlerTick.post(this)
+        handler.postDelayed(tick, tickTimePeriodInMilliseconds)
     }
 
     fun stop() {
-        handlerTick.removeCallbacks(this)
+        handler.removeCallbacks(tick)
+    }
+
+    fun release() {
+        stop()
+        thread.quitSafely() // Освобождает ресурсы ОС и убивает поток
     }
 
     fun interface OnTimeTickListener{

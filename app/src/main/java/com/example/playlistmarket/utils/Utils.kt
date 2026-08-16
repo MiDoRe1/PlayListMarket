@@ -2,9 +2,9 @@ package com.example.playlistmarket.utils
 
 import android.content.Context
 import android.util.TypedValue
-import com.example.playlistmarket.data.dto.TrackInfoDto
+import com.example.playlistmarket.search.data.dto.TrackInfoDto
 import com.example.playlistmarket.R
-import com.example.playlistmarket.domain.models.Track
+import com.example.playlistmarket.search.domain.models.Track
 import java.util.Locale
 import kotlin.String
 import kotlin.random.Random
@@ -21,19 +21,3 @@ fun convertMillisecondsInNeededStringFormat(milliseconds: Long, format: String =
     return SimpleDateFormat(format, Locale.getDefault()).format(milliseconds)
 }
 
-fun TrackInfoDto.toTrackModel(context: Context): Track {
-    val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
-    val trackModel = Track(
-        trackId = trackId ?: Random.nextLong(Long.MIN_VALUE, -3),
-        trackName = trackName ?: context.getString(R.string.unknown_track_name),
-        artistName = artistName ?: context.getString(R.string.unknown_artist_name),
-        trackTime = timeFormatter.format(trackTimeMillis ?: 0L),
-        artworkUrl100 = artworkUrl100 ?: context.getString(R.string.unknown_track_url),
-        collectionName = collectionName ?: "",
-        releaseDate = releaseDate ?: "",
-        primaryGenreName = primaryGenreName ?: "",
-        country = country ?: "",
-        previewUrl = previewUrl ?: ""
-    )
-    return trackModel
-}

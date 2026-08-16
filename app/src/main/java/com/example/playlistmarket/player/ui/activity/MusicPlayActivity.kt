@@ -1,12 +1,10 @@
 package com.example.playlistmarket.player.ui.activity
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -16,12 +14,16 @@ import com.example.playlistmarket.player.ui.viewmodel.MusicPlayViewModel
 import com.example.playlistmarket.player.ui.viewmodel.State
 import com.example.playlistmarket.search.domain.models.Track
 import com.google.gson.Gson
+import org.koin.core.parameter.parametersOf
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicPlayActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMusicPlayBinding
 
-    private lateinit var viewModel : MusicPlayViewModel
+    private val viewModel : MusicPlayViewModel by viewModel {
+        parametersOf(currentTrack.previewUrl)
+    }
 
     private lateinit var currentTrack: Track
 
@@ -41,10 +43,6 @@ class MusicPlayActivity : AppCompatActivity() {
             intent.getStringExtra(JSON_FORMAT_TRACK_KEY),
             Track::class.java)
 
-        viewModel = ViewModelProvider.create(
-            this,
-            MusicPlayViewModel.getFactory(currentTrack.previewUrl)
-        ).get(MusicPlayViewModel::class.java)
 
         viewModel.observePlayerStatus().observe(this) {
             when (it) {

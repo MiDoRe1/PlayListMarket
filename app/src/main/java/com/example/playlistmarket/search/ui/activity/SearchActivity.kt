@@ -11,17 +11,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.ActivitySearchBinding
 import com.example.playlistmarket.search.domain.models.Track
 import com.example.playlistmarket.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmarket.search.ui.viewmodel.State
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private  val viewModel: SearchViewModel by viewModel()
     private lateinit var binding: ActivitySearchBinding
     private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
     private var tracks = mutableListOf<Track>()
@@ -44,8 +44,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory())
-            .get(SearchViewModel::class.java)
+
 
         viewModel.observeStateViewModel().observe(this){
             hideAllLogicElements()

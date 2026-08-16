@@ -9,21 +9,12 @@ import com.example.playlistmarket.search.data.dto.Response as dtoResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class ITunesSearchApiTracksNetworkClient(
-    val baseUrl: String = DEFAULT_URL_ITUNES
+    private val iTunesService: ITunesSearchAPIInterface
 ): NetworkClient {
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private  val iTunesService = retrofit.create<ITunesSearchAPIInterface>()
 
     fun asyncGetData(
         request: TrackInfoRequest,

@@ -10,7 +10,7 @@ class SearchHistoryInteractorImpl(
 
     override fun saveToHistory(track: Track) {
         getHistory { tracks ->
-            var oldList = mutableListOf<Track>()
+            val oldList = mutableListOf<Track>()
             oldList.addAll(tracks.reversed())
             oldList.removeIf { it.trackId == track.trackId }
             oldList.add(track)

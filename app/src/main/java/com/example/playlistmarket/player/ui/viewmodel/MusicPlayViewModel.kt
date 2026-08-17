@@ -1,23 +1,31 @@
 package com.example.playlistmarket.player.ui.viewmodel
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmarket.utils.MediaPlayerWorker
 import com.example.playlistmarket.utils.Timer
 import com.example.playlistmarket.utils.convertMillisecondsInNeededStringFormat
+import org.koin.core.component.KoinComponent
+import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
-class MusicPlayViewModel(private val url: String): ViewModel() {
-    private val mainHandler = Handler(Looper.getMainLooper())
+class MusicPlayViewModel(
+    private val url: String
+): ViewModel(), KoinComponent {
 
-    private lateinit var  timer : Timer
-    private lateinit var mediaPlayerWorker : MediaPlayerWorker
+    private val timer : Timer by inject<Timer> {
+        parametersOf(
+            TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER,
+            callbackForTimer)
+    }
+    private val mediaPlayerWorker : MediaPlayerWorker by inject {
+        parametersOf(
+            onPreparedListener,
+            onCompletionListener
+        )
+    }
 
     private var currentTrackTime: String = INIT_TRACK_TIME
 
@@ -40,18 +48,10 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
     }
 
     init {
-        mediaPlayerWorker = MediaPlayerWorker(
-            onPreparedListener,
-            onCompletionListener
-        ).apply {
+        mediaPlayerWorker.apply {
             setDataSource(url)
             prepareAsync()
         }
-
-        timer = Timer(
-            TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER,
-            callbackForTimer
-        )
     }
 
     private val playerStatus = MutableLiveData<State>(State.Initialization)
@@ -94,13 +94,8 @@ class MusicPlayViewModel(private val url: String): ViewModel() {
     }
 
         companion object {
-            val TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER = 1000L
-            val INIT_TRACK_TIME = "00:00"
+            const val TIME_IN_MILLISECOND_TO_UPDATE_PLAY_TIMER = 1000L
+            const val INIT_TRACK_TIME = "00:00"
 
-            fun getFactory(url: String) : ViewModelProvider.Factory = viewModelFactory {
-                initializer {
-                    MusicPlayViewModel(url)
-                }
-            }
         }
 }

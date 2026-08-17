@@ -1,6 +1,5 @@
 package com.example.playlistmarket.search.ui.viewmodel
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -8,17 +7,11 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmarket.creator.Creator
 import com.example.playlistmarket.player.ui.activity.MusicPlayActivity
 import com.example.playlistmarket.search.domain.api.interactors.SearchHistoryInteractor
 import com.example.playlistmarket.search.domain.api.interactors.TracksInteractor
 import com.example.playlistmarket.search.domain.models.Track
 import com.google.gson.Gson
-import kotlinx.coroutines.Runnable
 
 class SearchViewModel(
     private val searchHistoryInteractor: SearchHistoryInteractor,
@@ -122,15 +115,6 @@ class SearchViewModel(
     }
 
     companion object {
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as Application)
-                SearchViewModel(
-                    Creator.provideSearchHistoryInteractor(app),
-                    Creator.provideTracksInteractor()
-                )
-            }
-        }
 
         const val DEBOUNCE_MILLISECOND_TIME_TO_MAKE_REQUEST: Long = 2000
 

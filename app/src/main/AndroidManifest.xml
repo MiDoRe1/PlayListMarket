@@ -15,13 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlayListMarket">
         <activity
+            android:name=".medialibrary.ui.activity.MedialibraryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_medialibrary"
+            android:theme="@style/SecondaryMain" />
+        <activity
             android:name=".player.ui.activity.MusicPlayActivity"
             android:exported="false"
-            android:theme="@style/SecondaryMain"/>
+            android:theme="@style/SecondaryMain" />
         <activity
             android:name=".Test"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".search.ui.activity.SearchActivity"
             android:exported="false"

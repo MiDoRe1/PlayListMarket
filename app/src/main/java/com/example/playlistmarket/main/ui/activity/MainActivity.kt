@@ -6,11 +6,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.ActivityMainBinding
+import com.example.playlistmarket.medialibrary.ui.activity.MedialibraryActivity
 import com.example.playlistmarket.search.ui.activity.SearchActivity
 import com.example.playlistmarket.settings.ui.activity.SettingsActivity
 import com.google.android.material.button.MaterialButton
@@ -36,8 +38,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonGoToLibrary.setOnClickListener {
-            Toast.makeText(this@MainActivity, "push \"go to library\"", Toast.LENGTH_LONG)
-                .show()
+            val intent = Intent(this, MedialibraryActivity::class.java)
+            startActivity((intent))
         }
 
         binding.buttonGoToSettings.setOnClickListener {

@@ -1,52 +1,43 @@
-package com.example.playlistmarket.search.ui.activity
+package com.example.playlistmarket.search.ui.fragment
 
-
-
-import com.google.android.material.textfield.TextInputEditText
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.addTextChangedListener
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.ViewGroup
 import com.example.playlistmarket.R
-import com.example.playlistmarket.databinding.ActivitySearchBinding
+import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmarket.core.ui.BindingFragment
+import com.example.playlistmarket.databinding.FragmentSearchBinding
+import com.example.playlistmarket.player.ui.fragment.MusicPlayerFragment
 import com.example.playlistmarket.search.domain.models.Track
 import com.example.playlistmarket.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmarket.search.ui.viewmodel.State
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
+
+    override fun getBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(inflater, container, false)
+    }
 
     private  val viewModel: SearchViewModel by viewModel()
-    private lateinit var binding: ActivitySearchBinding
+
     private var inputTextSearch: String = DEFAULT_TEXT_FOR_SEARCH
     private var tracks = mutableListOf<Track>()
     private val viewedTracks = mutableListOf<Track>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            v.setPadding(
-                v.paddingLeft,
-                statusBar.top,
-                v.paddingRight,
-                navigationBars.bottom
-            )
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        super.onViewCreated(view, savedInstanceState)
 
-
-        viewModel.observeStateViewModel().observe(this){
+        viewModel.observeStateViewModel().observe(viewLifecycleOwner){
             hideAllLogicElements()
             when (it) {
                 is State.FoundTracksState -> {
@@ -75,13 +66,12 @@ class SearchActivity : AppCompatActivity() {
         initFailLoadPlaceHolder()
         initEmptyResultPlaceholder()
         initRvTracks()
-        initHeaderToolBar()
         initButtonTryAgain()
         initSearchTextInput()
-        initLayoutSearchHistory()
+
         initRvViewedTracks()
         initButtonClearHistory()
-        initProgressBarLoadTracksInfo()
+
 
         if (savedInstanceState != null) {
             loadSearchStringInTextInput(
@@ -92,16 +82,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun initProgressBarLoadTracksInfo() {}
-
-    private fun initLayoutSearchHistory() {}
 
     private fun initRvViewedTracks() {
-        binding.rvViewedTracks.adapter = TrackAdapter(viewedTracks) {
-            track ->
-            viewModel.openMusicPlayer(track, this.applicationContext)
+
+        binding.rvViewedTracks.adapter = TrackAdapter(viewedTracks) { track ->
+            viewModel.insertTrackInHistory(track)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_musicPlayerFragment,
+                MusicPlayerFragment.getArgs(Gson().toJson(track))
+            )
         }
-        binding.rvViewedTracks.layoutManager = LinearLayoutManager(this)
+
+        binding.rvViewedTracks.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun initButtonClearHistory() {
@@ -116,18 +108,15 @@ class SearchActivity : AppCompatActivity() {
 
 
     fun initRvTracks() {
-        binding.rvTracks.adapter = TrackAdapter(tracks) {
-            track ->
-            viewModel.openMusicPlayer(track, this.applicationContext)
+        binding.rvTracks.adapter = TrackAdapter(tracks) { track ->
+            viewModel.insertTrackInHistory(track)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_musicPlayerFragment,
+                MusicPlayerFragment.getArgs(Gson().toJson(track))
+            )
         }
     }
 
-
-    fun initHeaderToolBar() {
-        binding.headerToolbar.setNavigationOnClickListener {
-            finish()
-        }
-    }
 
     fun initButtonTryAgain() {
         binding.buttonTryAgain.setOnClickListener { _ ->
@@ -136,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun initSearchTextInput() {
-            binding.searchTextInput.setEndIconOnClickListener {
+        binding.searchTextInput.setEndIconOnClickListener {
             binding.searchEditText.setText("")
             binding.searchEditText.clearFocus()
         }
@@ -159,8 +148,8 @@ class SearchActivity : AppCompatActivity() {
         binding.emptyResultPlaceholder.visibility = View.GONE
         binding.failLoadPlaceholder.visibility = View.GONE
         binding.layoutSearchHistory.visibility = View.GONE
-        binding.rvTracks.visibility = View.GONE
-        binding.progressBarLoadTracksInfo.visibility = View.GONE
+        binding.frameLayoutSearchPlaceholder.visibility = View.GONE
+        binding.frameLayoutLoadingPlaceholder.visibility = View.GONE
     }
 
     fun loadSearchStringInTextInput(searchString: String) {
@@ -170,21 +159,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_TEXT_FOR_SEARCH ,inputTextSearch)
-    }
-
-    override fun onRestoreInstanceState(
-        savedInstanceState: Bundle?,
-        persistentState: PersistableBundle?
-    ) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState)
-        val searchEditText = findViewById<TextInputEditText>(R.id.searchEditText)
-        if (savedInstanceState != null) {
-            val searchTextFromBundle = savedInstanceState.getString(
-                INPUT_TEXT_FOR_SEARCH,
-                DEFAULT_TEXT_FOR_SEARCH)
-            inputTextSearch = searchTextFromBundle
-            searchEditText.setText(inputTextSearch)
-        }
     }
 
     private fun updateViewedTracks(tracks: List<Track>) {
@@ -198,11 +172,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchTrackUI() {
-        binding.rvTracks.visibility = View.VISIBLE
+        binding.frameLayoutSearchPlaceholder.visibility = View.VISIBLE
     }
 
     private fun showLoadProcessBar() {
-        binding.progressBarLoadTracksInfo.visibility = View.VISIBLE
+        binding.frameLayoutLoadingPlaceholder.visibility = View.VISIBLE
     }
 
     private fun updateTracks(newTracks: List<Track>) {
@@ -211,19 +185,9 @@ class SearchActivity : AppCompatActivity() {
         binding.rvTracks.adapter?.notifyDataSetChanged()
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
     companion object {
         const val INPUT_TEXT_FOR_SEARCH : String = "INPUT_TEXT_FOR_SEARCH"
         const val DEFAULT_TEXT_FOR_SEARCH: String = ""
 
     }
-
-
 }

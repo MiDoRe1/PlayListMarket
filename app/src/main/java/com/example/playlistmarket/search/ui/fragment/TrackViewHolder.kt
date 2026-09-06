@@ -1,12 +1,8 @@
-package com.example.playlistmarket.search.ui.activity
+package com.example.playlistmarket.search.ui.fragment
 
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.compose.ui.layout.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop

@@ -1,4 +1,4 @@
-package com.example.playlistmarket.search.ui.activity
+package com.example.playlistmarket.search.ui.fragment
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

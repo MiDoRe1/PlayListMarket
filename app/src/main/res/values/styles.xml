@@ -84,6 +84,12 @@
         <item name="textAllCaps">false</item>
         <item name="android:textSize">14sp</item>
     </style>
+    
+    <style name="BottomNavigationViewText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+    </style>
+
 
 
 

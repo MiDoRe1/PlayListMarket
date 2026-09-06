@@ -7,7 +7,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmarket.player.ui.activity.MusicPlayActivity
 import com.example.playlistmarket.search.domain.api.interactors.SearchHistoryInteractor
 import com.example.playlistmarket.search.domain.api.interactors.TracksInteractor
 import com.example.playlistmarket.search.domain.models.Track
@@ -105,13 +104,7 @@ class SearchViewModel(
     }
 
     private fun initMusicPlayer(track: Track, context: Context) {
-        val musicPlayerIntent = Intent(context, MusicPlayActivity::class.java)
-        musicPlayerIntent.putExtra(
-            MusicPlayActivity.Companion.JSON_FORMAT_TRACK_KEY,
-            Gson().toJson(track)
-        )
-        musicPlayerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(musicPlayerIntent)
+
     }
 
     companion object {

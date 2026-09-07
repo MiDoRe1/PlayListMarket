@@ -12,6 +12,7 @@ import com.example.playlistmarket.core.ui.BindingFragment
 import com.example.playlistmarket.databinding.FragmentSearchBinding
 import com.example.playlistmarket.player.ui.fragment.MusicPlayerFragment
 import com.example.playlistmarket.search.domain.models.Track
+import com.example.playlistmarket.search.ui.viewmodel.Event
 import com.example.playlistmarket.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmarket.search.ui.viewmodel.State
 import com.google.gson.Gson
@@ -62,6 +63,14 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 }
             }
         }
+        viewModel.observeSingleEventViewModel().observe(viewLifecycleOwner) {
+            when (it) {
+                is Event.MusicPlayerInvokeEvent -> {
+                    navigateToMusicPlayer(it.track)
+                }
+            }
+
+        }
 
         initFailLoadPlaceHolder()
         initEmptyResultPlaceholder()
@@ -82,15 +91,16 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-
+    private fun navigateToMusicPlayer(track: Track) {
+        findNavController().navigate(
+            R.id.action_searchFragment_to_musicPlayerFragment,
+            MusicPlayerFragment.getArgs(Gson().toJson(track))
+        )
+    }
     private fun initRvViewedTracks() {
 
         binding.rvViewedTracks.adapter = TrackAdapter(viewedTracks) { track ->
-            viewModel.insertTrackInHistory(track)
-            findNavController().navigate(
-                R.id.action_searchFragment_to_musicPlayerFragment,
-                MusicPlayerFragment.getArgs(Gson().toJson(track))
-            )
+           viewModel.openMusicPlayer(track)
         }
 
         binding.rvViewedTracks.layoutManager = LinearLayoutManager(requireContext())
@@ -109,11 +119,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     fun initRvTracks() {
         binding.rvTracks.adapter = TrackAdapter(tracks) { track ->
-            viewModel.insertTrackInHistory(track)
-            findNavController().navigate(
-                R.id.action_searchFragment_to_musicPlayerFragment,
-                MusicPlayerFragment.getArgs(Gson().toJson(track))
-            )
+            viewModel.openMusicPlayer(track)
         }
     }
 

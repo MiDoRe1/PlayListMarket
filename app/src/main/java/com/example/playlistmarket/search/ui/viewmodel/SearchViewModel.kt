@@ -1,7 +1,5 @@
 package com.example.playlistmarket.search.ui.viewmodel
 
-import android.content.Context
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -10,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmarket.search.domain.api.interactors.SearchHistoryInteractor
 import com.example.playlistmarket.search.domain.api.interactors.TracksInteractor
 import com.example.playlistmarket.search.domain.models.Track
-import com.google.gson.Gson
+import com.example.playlistmarket.utils.SingleLiveEvent
 
 class SearchViewModel(
     private val searchHistoryInteractor: SearchHistoryInteractor,
@@ -26,6 +24,10 @@ class SearchViewModel(
         value = State.DefaultState
     }
     fun observeStateViewModel(): LiveData<State> = stateViewModel
+
+    val singleEvent = SingleLiveEvent<Event>()
+
+    fun observeSingleEventViewModel(): LiveData<Event> = singleEvent
 
     private fun getTracksFromHistory(): List<Track> {
         var historyTracks = listOf<Track>()
@@ -79,7 +81,7 @@ class SearchViewModel(
         }
     }
 
-    fun insertTrackInHistory(track: Track) {
+    private fun insertTrackInHistory(track: Track) {
         searchHistoryInteractor.saveToHistory(track)
     }
 
@@ -88,7 +90,7 @@ class SearchViewModel(
         stateViewModel.postValue(State.DefaultState)
     }
 
-    fun openMusicPlayer(track: Track, context: Context) {
+    fun openMusicPlayer(track: Track) {
         if (isMusicPlayerAllowed) {
             isMusicPlayerAllowed = false
             insertTrackInHistory(track)
@@ -99,12 +101,12 @@ class SearchViewModel(
                 Runnable{ isMusicPlayerAllowed = true},
                 DEBOUNCE_MILLISECOND_TIME_TO_CLICK_ON_TRACK
             )
-            initMusicPlayer(track, context)
+            initMusicPlayer(track)
         }
     }
 
-    private fun initMusicPlayer(track: Track, context: Context) {
-
+    private fun initMusicPlayer(track: Track) {
+        singleEvent.postValue(Event.MusicPlayerInvokeEvent(track))
     }
 
     companion object {

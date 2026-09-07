@@ -1,6 +1,7 @@
 package com.example.playlistmarket.main.ui.activity
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,5 +30,21 @@ class RootActivity : AppCompatActivity(R.layout.activity_root) {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_view_main) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigationViewMain.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.musicPlayerFragment -> hideBottomNavUI()
+                else -> showBottomNavUI()
+            }
+        }
+    }
+
+    private fun hideBottomNavUI() {
+        binding.dividingLine.visibility = View.GONE
+        binding.bottomNavigationViewMain.visibility = View.GONE
+    }
+
+    private fun showBottomNavUI() {
+        binding.dividingLine.visibility = View.VISIBLE
+        binding.bottomNavigationViewMain.visibility = View.VISIBLE
     }
 }

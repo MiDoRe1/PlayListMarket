@@ -7,6 +7,8 @@ import com.example.playlistmarket.search.data.dto.TrackInfoResponse
 import com.example.playlistmarket.search.domain.api.repositories.TracksRepository
 import com.example.playlistmarket.search.domain.models.Track
 import com.example.playlistmarket.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.random.Random
@@ -28,6 +30,24 @@ class TracksRepositoryImpl(
             }
             else -> {
                 Resource.Error("Ошибка сервера")
+            }
+        }
+    }
+
+    override fun searchTracksWithFlow(expression: String): Flow<Resource<List<Track>>> = flow{
+        val response = networkClient.doRequestSuspend(TrackInfoRequest(expression))
+        when (response.resultCode) {
+            -1 -> {
+                emit(Resource.Error("Проверьте подключение к интернету"))
+            }
+            200 -> {
+                emit(
+                    Resource.Success( (response as TrackInfoResponse).results!!.map {
+                    trackInfoDtoToTrack(it) })
+                )
+            }
+            else -> {
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }

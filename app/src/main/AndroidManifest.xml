@@ -15,35 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlayListMarket">
         <activity
-            android:name=".medialibrary.ui.activity.MedialibraryActivity"
-            android:exported="false"
-            android:label="@string/title_activity_medialibrary"
-            android:theme="@style/SecondaryMain" />
-        <activity
-            android:name=".player.ui.activity.MusicPlayActivity"
-            android:exported="false"
-            android:theme="@style/SecondaryMain" />
-        <activity
-            android:name=".Test"
-            android:exported="false" />
-        <activity
-            android:name=".search.ui.activity.SearchActivity"
-            android:exported="false"
-            android:theme="@style/SecondaryMain" />
-        <activity
-            android:name=".settings.ui.activity.SettingsActivity"
-            android:exported="false"
-            android:theme="@style/SecondaryMain" />
-        <activity
-            android:name=".main.ui.activity.MainActivity"
+            android:name=".main.ui.activity.RootActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.PlayListMarket">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/SecondaryMain">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+            </activity>
     </application>
 
 </manifest>

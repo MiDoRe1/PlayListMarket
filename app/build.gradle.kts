@@ -76,4 +76,7 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.3.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.8.0")
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.fragment)
 }

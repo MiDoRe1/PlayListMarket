@@ -15,6 +15,7 @@ import com.example.playlistmarket.utils.debounce
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -77,6 +78,14 @@ class MusicPlayViewModel(
 
     private val trackInformationStatus = MutableLiveData<Track>(track)
 
+    fun getActualInformationAboutTrack() {
+        val outdateTrack = track
+        viewModelScope.launch {
+            val actualTrack = favoriteTracksInteractor.getTrackById(track.trackId).firstOrNull()
+            track =  actualTrack ?: outdateTrack
+            trackInformationStatus.postValue(track)
+        }
+    }
     fun observeTrackInformationStatus(): LiveData<Track> = trackInformationStatus
 
     fun onPlayPauseButtonClick() {

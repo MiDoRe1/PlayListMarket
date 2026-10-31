@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TrackDao {
@@ -21,8 +22,8 @@ interface TrackDao {
     suspend fun updateTrack(trackEntity: TrackEntity)
 
     @Query("Select * from track_table order by createdAt DESC")
-    suspend fun getAllTracks(): List<TrackEntity>
+    fun getAllTracks(): Flow<List<TrackEntity>>
 
     @Query("Select * from track_table where trackId = :trackId")
-    suspend fun getTrackById(trackId: Long): TrackEntity?
+    fun getTrackById(trackId: Long): Flow<TrackEntity?>
 }

@@ -65,6 +65,7 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
         viewModel.observeTrackInformationStatus().observe(viewLifecycleOwner) { track ->
             updateTrackInformationUI(track)
         }
+        viewModel.getActualInformationAboutTrack()
         initTrackIcon()
         initTrackInformation()
         initButtonReturn()

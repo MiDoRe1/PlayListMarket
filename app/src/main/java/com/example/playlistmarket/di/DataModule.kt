@@ -4,6 +4,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.room.Room
 import com.example.playlistmarket.medialibrary.data.FavoriteTracksRepositoryImpl
 import com.example.playlistmarket.medialibrary.data.db.AppDatabase
+import com.example.playlistmarket.medialibrary.data.db.dao.TrackDao
 import com.example.playlistmarket.medialibrary.data.dto.TrackDbConvertor
 import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksRepository
 import com.example.playlistmarket.search.data.ITunesSearchAPI.ITunesSearchAPIInterface
@@ -103,6 +104,10 @@ val mediaLibraryDataModule = module {
             .fallbackToDestructiveMigration(true)
             .build()
 
+    }
+
+    single<TrackDao> {
+        get<AppDatabase>().trackDao()
     }
 
     factory<TrackDbConvertor> {

@@ -79,4 +79,5 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.fragment)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 }

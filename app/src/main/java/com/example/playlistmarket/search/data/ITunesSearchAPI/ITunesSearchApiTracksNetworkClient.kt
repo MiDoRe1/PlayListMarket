@@ -5,45 +5,15 @@ package com.example.playlistmarket.search.data.ITunesSearchAPI
 import com.example.playlistmarket.search.data.NetworkClient
 import com.example.playlistmarket.search.data.dto.TrackInfoRequest
 import com.example.playlistmarket.search.data.dto.TrackInfoResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.example.playlistmarket.search.data.dto.Response as dtoResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class ITunesSearchApiTracksNetworkClient(
     private val iTunesService: ITunesSearchAPIInterface
 ): NetworkClient {
-
-    fun asyncGetData(
-        request: TrackInfoRequest,
-        outerOnResponse: OnResponseReactable,
-        outerOnFailure: OnFailureReactable
-    ){
-        iTunesService.getTracks(request.expression).
-        enqueue(object: Callback<TrackInfoResponse>{
-            override fun onResponse(
-                call: Call<TrackInfoResponse?>,
-                response: Response<TrackInfoResponse?>
-            ) {
-
-                when (response.code()) {
-                    200 -> outerOnResponse.doOnResponse(response.body())
-                    else -> outerOnFailure.doOnFailure()
-                }
-
-            }
-
-            override fun onFailure(
-                call: Call<TrackInfoResponse?>,
-                t: Throwable
-            ) {
-                outerOnFailure.doOnFailure()
-            }
-
-        })
-    }
 
     override fun doRequest(dto: Any): dtoResponse {
         try {
@@ -62,6 +32,25 @@ class ITunesSearchApiTracksNetworkClient(
 
 
     }
+
+    override suspend fun doRequestSuspend(dto: Any): dtoResponse {
+        if (dto is TrackInfoRequest) {
+            return withContext(Dispatchers.IO) {
+                try {
+                    val resp = iTunesService.getTracksSuspend(dto.expression)
+                    resp.apply {
+                        resultCode = 200
+                    }
+                } catch (e: Throwable) {
+                    dtoResponse().apply { resultCode = -1 }
+                }
+            }
+        } else {
+            return dtoResponse().apply { resultCode = 400 }
+        }
+    }
+
+
     fun interface OnResponseReactable {
         fun doOnResponse(tracksData: TrackInfoResponse?)
     }

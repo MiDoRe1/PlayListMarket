@@ -3,7 +3,10 @@ package com.example.playlistmarket.search.domain.impls
 
 import com.example.playlistmarket.search.domain.api.interactors.TracksInteractor
 import com.example.playlistmarket.search.domain.api.repositories.TracksRepository
+import com.example.playlistmarket.search.domain.models.Track
 import com.example.playlistmarket.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(
@@ -28,6 +31,14 @@ class TracksInteractorImpl(
             }
     }
 
+    override fun searchTracksWithFlow(expression: String): Flow<Pair<List<Track>?, String?>> {
+        return tracksRepository.searchTracksWithFlow(expression).map { resource ->
+            when (resource) {
+                is Resource.Success -> Pair(resource.data, null)
+                is Resource.Error -> Pair(null, resource.message)
+            }
+        }
+    }
 
 
     companion object {

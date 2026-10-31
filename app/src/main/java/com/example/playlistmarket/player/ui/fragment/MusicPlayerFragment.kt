@@ -41,7 +41,7 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
             Track::class.java
         )
 
-        viewModel = getViewModel { parametersOf(currentTrack.previewUrl) }
+        viewModel = getViewModel { parametersOf(currentTrack) }
 
         viewModel.observePlayerStatus().observe(viewLifecycleOwner) {
             when (it) {
@@ -59,15 +59,24 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
                 is State.Pause -> {
                     showPlayButton()
                 }
-
             }
         }
 
+        viewModel.observeTrackInformationStatus().observe(viewLifecycleOwner) { track ->
+            updateTrackInformationUI(track)
+        }
         initTrackIcon()
         initTrackInformation()
         initButtonReturn()
         initButtonPlay()
+        initButtonFavoriteTrack()
 
+    }
+
+    private fun initButtonFavoriteTrack() {
+        binding.buttonLike.setOnClickListener {
+            viewModel.changeFavoriteStatusOfTrack()
+        }
     }
 
     private fun initTrackIcon() {
@@ -90,6 +99,16 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
             textViewTrackGenreValue.text = currentTrack.primaryGenreName
             textViewTrackCountryValue.text = currentTrack.country
         }
+        initFavoriteIcon()
+    }
+
+    private fun initFavoriteIcon() {
+        if (currentTrack.isFavorites) {
+            binding.buttonLike.setImageResource(R.drawable.ic_like_active)
+        } else {
+            binding.buttonLike.setImageResource(R.drawable.ic_like_unactive)
+        }
+
     }
 
     private fun initButtonReturn() {
@@ -109,6 +128,11 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
 
     private fun showPlayButton() {
         binding.buttonPlay.setImageResource(R.drawable.ic_play)
+    }
+
+    private fun updateTrackInformationUI(track: Track) {
+        currentTrack = track
+        initTrackInformation()
     }
 
 

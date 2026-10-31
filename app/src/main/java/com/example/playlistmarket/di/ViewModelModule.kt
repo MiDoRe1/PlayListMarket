@@ -7,14 +7,15 @@ import com.example.playlistmarket.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmarket.settings.ui.viewmodel.SettingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.example.playlistmarket.search.domain.models.Track
 
 val viewModelModule = module {
     viewModel<SearchViewModel> {
         SearchViewModel(get(), get())
     }
 
-    viewModel<MusicPlayViewModel> { (url: String) ->
-        MusicPlayViewModel(url)
+    viewModel<MusicPlayViewModel> { (track: Track) ->
+        MusicPlayViewModel(track, get())
     }
 
     viewModel<SettingViewModel> {
@@ -22,7 +23,7 @@ val viewModelModule = module {
     }
 
     viewModel<FavoriteTracksViewModel> {
-        FavoriteTracksViewModel()
+        FavoriteTracksViewModel(get())
     }
 
     viewModel<PlaylistsViewModel> {

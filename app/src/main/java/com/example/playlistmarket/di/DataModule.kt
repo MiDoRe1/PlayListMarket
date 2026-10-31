@@ -1,5 +1,11 @@
 package com.example.playlistmarket.di
 
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.room.Room
+import com.example.playlistmarket.medialibrary.data.FavoriteTracksRepositoryImpl
+import com.example.playlistmarket.medialibrary.data.db.AppDatabase
+import com.example.playlistmarket.medialibrary.data.dto.TrackDbConvertor
+import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksRepository
 import com.example.playlistmarket.search.data.ITunesSearchAPI.ITunesSearchAPIInterface
 import com.example.playlistmarket.search.data.ITunesSearchAPI.ITunesSearchApiTracksNetworkClient
 import com.example.playlistmarket.search.data.NetworkClient
@@ -89,4 +95,18 @@ val sharingDataModule = module {
     single<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
     }
+}
+
+val mediaLibraryDataModule = module {
+    single<AppDatabase> {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration(true)
+            .build()
+
+    }
+
+    factory<TrackDbConvertor> {
+        TrackDbConvertor()
+    }
+
 }

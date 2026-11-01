@@ -1,5 +1,9 @@
 package com.example.playlistmarket.di
 
+import com.example.playlistmarket.medialibrary.data.FavoriteTracksRepositoryImpl
+import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksInteractor
+import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksRepository
+import com.example.playlistmarket.medialibrary.domain.impl.FavoriteTracksInteractorImpl
 import com.example.playlistmarket.search.domain.api.interactors.SearchHistoryInteractor
 import com.example.playlistmarket.search.domain.api.interactors.TracksInteractor
 import com.example.playlistmarket.search.domain.impls.SearchHistoryInteractorImpl
@@ -29,5 +33,15 @@ val settingDomainModule = module {
 val sharingDomainModule = module {
     single<SharingInteractor> {
         SharingInteractorImpl(get(), get())
+    }
+}
+
+val mediaLibraryDomainModule = module {
+    single<FavoriteTracksInteractor> {
+        FavoriteTracksInteractorImpl(get())
+    }
+
+    single<FavoriteTracksRepository> {
+        FavoriteTracksRepositoryImpl(get(), get())
     }
 }

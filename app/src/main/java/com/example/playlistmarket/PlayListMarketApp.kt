@@ -2,6 +2,8 @@ package com.example.playlistmarket
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmarket.di.mediaLibraryDataModule
+import com.example.playlistmarket.di.mediaLibraryDomainModule
 import com.example.playlistmarket.di.searchDataModule
 import com.example.playlistmarket.di.searchDomainModule
 import com.example.playlistmarket.di.settingDataModule
@@ -24,8 +26,8 @@ class PlayListMarketApp : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@PlayListMarketApp)
-            modules(searchDataModule, settingDataModule, sharingDataModule,
-                searchDomainModule, settingDomainModule, sharingDomainModule,
+            modules(searchDataModule, settingDataModule, sharingDataModule, mediaLibraryDataModule,
+                searchDomainModule, settingDomainModule, sharingDomainModule, mediaLibraryDomainModule,
                 viewModelModule,
                 utilsModule
                 )

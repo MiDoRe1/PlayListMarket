@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mediaLibraryFragment_to_musicPlayerFragment"
             app:destination="@id/musicPlayerFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -32,7 +35,11 @@
         android:id="@+id/musicPlayerFragment"
         android:name="com.example.playlistmarket.player.ui.fragment.MusicPlayerFragment"
         android:label="MusicPlayerFragment"
-        tools:layout="@layout/fragment_music_player"/>
+        tools:layout="@layout/fragment_music_player">
+        <action
+            android:id="@+id/action_musicPlayerFragment_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteTracksFragment"
         android:name="com.example.playlistmarket.medialibrary.ui.fragment.FavoriteTracksFragment"
@@ -41,4 +48,8 @@
             android:id="@+id/action_favoriteTracksFragment_to_musicPlayerFragment"
             app:destination="@id/musicPlayerFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addPlaylistFragment"
+        android:name="com.example.playlistmarket.medialibrary.ui.fragment.AddPlaylistFragment"
+        android:label="AddPlaylistFragment" />
 </navigation>

@@ -29,9 +29,13 @@ import android.provider.Settings
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.toBitmap
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.medialibrary.ui.viewmodel.AddPlaylistState
 import com.example.playlistmarket.medialibrary.ui.viewmodel.AddPlaylistViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.PlaylistsViewModel
+import com.example.playlistmarket.utils.dpToPx
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -132,23 +136,8 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
     }
 
     fun initButtonAddPhoto() {
-        binding.cardviewPlaylistPlaceholder.setOnClickListener {
-            val requester = PermissionRequester.instance()
-            viewLifecycleOwner.lifecycleScope.launch {
-                requester.request(
-                    Manifest.permission.CAMERA
-                ).collect { result ->
-                    when (result) {
-                        is PermissionResult.Granted -> addPhoto()// Пользователь дал разрешение, можно продолжать работу
-                        is PermissionResult.Denied -> showDefaultPlaceholder()// Пользователь отказал в предоставлении разрешения
-                        is PermissionResult.Denied.NeedsRationale -> {
-                            showToastMessage(getString(R.string.rationale_camera_string))
-                        }// Необходимо показать разрешение
-                        is PermissionResult.Denied.DeniedPermanently -> openAppSettings()// Запрещено навсегда, перезапрашивать нет смысла, предлагаем пройти в настройки
-                        is PermissionResult.Cancelled -> return@collect// Запрос на разрешение отменён
-                    }
-                }
-            }
+        binding.imageviewPlaylistImg.setOnClickListener {
+            addPhoto()
         }
     }
 
@@ -160,13 +149,17 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
     }
     private fun showDefaultPlaceholder() {
         binding.imageviewPlaylistImg.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        binding.imageviewPlaylistImg.setImageResource(R.drawable.ic_add_photo)
+        binding.imageviewPlaylistImg.setImageResource(R.drawable.img_add_photo_placeholder)
     }
 
     private fun loadImgToPlaceHolder(uri: Uri) {
         try {
             binding.imageviewPlaylistImg.scaleType = ImageView.ScaleType.CENTER_CROP
             binding.imageviewPlaylistImg.setImageURI(uri)
+            Glide.with(requireContext())
+                .load(uri)
+                .transform(CenterCrop(), RoundedCorners(dpToPx(8F,requireContext())))
+                .into(binding.imageviewPlaylistImg)
         } catch (e: Exception) {
             showDefaultPlaceholder()
         }

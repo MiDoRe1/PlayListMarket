@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.parametersOf
 import org.koin.core.component.inject
+import kotlin.math.log
 
 class MusicPlayViewModel(
     private var track: Track,
@@ -166,15 +167,14 @@ class MusicPlayViewModel(
 
     fun changeFavoriteStatusOfTrack(){
         if (!allowedClick()) return
+        Log.d("addtrack", "changeStatusPre: ${track.trackId}")
         val trackToUpdate = track.copy(isFavorites = !track.isFavorites)
+        Log.d("addtrack", "changeStatusAfte: ${trackToUpdate.trackId}")
         viewModelScope.launch {
-            if (trackToUpdate.isFavorites) {
-                favoriteTracksInteractor.insertTrack(trackToUpdate)
-            } else {
-                favoriteTracksInteractor.deleteTrack(trackToUpdate)
-            }
+            favoriteTracksInteractor.insertTrack(trackToUpdate)
             val updatedTrack = favoriteTracksInteractor.getTrackById(trackToUpdate.trackId).first()
             track = updatedTrack ?: trackToUpdate
+            Log.d("addtrack", "changeStatusAfterAll: ${track.trackId}")
             trackInformationStatus.postValue(track)
         }
     }
@@ -183,7 +183,10 @@ class MusicPlayViewModel(
 
     fun addTrackInPlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            if (playlistInteractor.isTrackInPlaylist(playlist, track)) {
+            Log.d("addtrack", "${track.trackId} ${playlist.id}")
+            val isIn = playlistInteractor.isTrackInPlaylist(playlist, track)
+            Log.d("addtrack", "${isIn}")
+            if (isIn) {
                 singleEventVmRequest.postValue(
                     VmRequest.ShowMessage("Трек уже добавлен в ${playlist.name}")
                 )

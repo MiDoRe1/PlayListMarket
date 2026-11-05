@@ -1,5 +1,6 @@
 package com.example.playlistmarket.medialibrary.data
 
+import android.util.Log
 import com.example.playlistmarket.medialibrary.data.db.dao.PlaylistDao
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistEntity
 import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
@@ -78,7 +79,12 @@ class PlaylistRepositoryImpl(
     override suspend fun isTrackInPlaylist(
         playlist: Playlist,
         track: Track
-    ): Boolean =
-        playlistDao.getPlaylistTracksCrossRef(playlist.id, track.trackId) != null
+    ): Boolean {
+        Log.d("addtrack", "looking for: ${playlist.id} --- ${track.trackId}")
+        val res =  playlistDao.getPlaylistTracksCrossRef(playlist.id, track.trackId)
+        Log.d("addtrack", "base: ${res==null}")
+        if (res != null) Log.d("addtrack", "base: ${res}}")
+        return res != null
+    }
 
 }

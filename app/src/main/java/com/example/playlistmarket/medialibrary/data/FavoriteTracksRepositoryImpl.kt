@@ -16,7 +16,7 @@ class FavoriteTracksRepositoryImpl(
 ) : FavoriteTracksRepository {
 
     override  fun getFavoriteTracks(): Flow<List<Track>> =
-        trackDao.getAllTracks().map { trackEntitiesList ->
+        trackDao.getAllFavoriteTracks().map { trackEntitiesList ->
             convertFromTrackEntity(trackEntitiesList)
     }
 
@@ -29,7 +29,7 @@ class FavoriteTracksRepositoryImpl(
 
 
     override suspend fun insertTrack(track: Track) {
-        trackDao.insertTrack(trackDbConvertor.map(track))
+        trackDao.upsertFavoriteStatus(trackDbConvertor.map(track), track.isFavorites)
     }
 
     override suspend fun updateTrack(track: Track) {
@@ -43,5 +43,6 @@ class FavoriteTracksRepositoryImpl(
     private fun convertFromTrackEntity(trackEntities: List<TrackEntity>): List<Track> {
         return trackEntities.map { trackEntity -> trackDbConvertor.map(trackEntity) }
     }
+
 
 }

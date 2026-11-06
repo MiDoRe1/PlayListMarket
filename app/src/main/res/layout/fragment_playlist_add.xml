@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/SecondaryMain">
+
+    <Toolbar
+        android:id="@+id/toolbar_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/ToolbarStyle"
+        android:title="Новый плейлист"
+        android:navigationIcon="@drawable/ic_arrow_back"
+        />
+
+
+
+    <ImageView
+        app:layout_constraintTop_toBottomOf="@id/toolbar_header"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginHorizontal="24dp"
+        android:id="@+id/imageview_playlist_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_add_photo_placeholder"
+
+        android:scaleType="centerCrop" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout_playlist_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="32dp"
+        android:hint="@string/title_playlist"
+        app:boxBackgroundMode="outline"
+        app:boxBackgroundColor="@android:color/transparent"
+        app:boxStrokeColor="@color/selector_textboxstroke_add_playlist"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:boxCornerRadiusTopStart="3dp"
+        app:boxCornerRadiusTopEnd="3dp"
+        app:boxCornerRadiusBottomStart="3dp"
+        app:boxCornerRadiusBottomEnd="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageview_playlist_img"
+        app:hintTextAppearance="@style/MakeLpaylistTextEditorTextStyle"
+        android:textColorHint="?attr/colorOnPrimary"
+        app:hintTextColor="@color/textbox_stroke_color_on_add_playlist">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_playlist_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/MakeLpaylistTextEditorTextStyle"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textSize="16sp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout_playlist_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/playlist_description"
+        app:boxBackgroundMode="outline"
+        app:boxBackgroundColor="@android:color/transparent"
+        app:boxStrokeColor="@color/selector_textboxstroke_add_playlist"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:boxCornerRadiusTopStart="3dp"
+        app:boxCornerRadiusTopEnd="3dp"
+        app:boxCornerRadiusBottomStart="3dp"
+        app:boxCornerRadiusBottomEnd="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_playlist_title"
+        android:textColorHint="?attr/colorOnPrimary"
+        app:hintTextColor="@color/textbox_stroke_color_on_add_playlist"
+        app:hintTextAppearance="@style/MakeLpaylistTextEditorTextStyle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_playlist_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/MakeLpaylistTextEditorTextStyle"
+
+            android:gravity="center_vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textSize="16sp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_make_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/selector_button_make_playlist"
+        android:layout_marginBottom="32dp"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/make"
+        android:textColor="@color/yp_white"
+        android:textSize="16sp"
+        app:cornerRadius="8dp"
+        android:enabled="false"
+        android:textAllCaps="false"
+        android:textAppearance="@style/CommonTextStyleForButton"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

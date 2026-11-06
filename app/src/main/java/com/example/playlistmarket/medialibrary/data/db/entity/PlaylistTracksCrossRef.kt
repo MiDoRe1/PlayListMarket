@@ -9,7 +9,6 @@ import androidx.room.Index
     primaryKeys = ["playlistId", "trackId"],
     indices = [Index("trackId")],
     foreignKeys = [
-        // Связь с таблицей плейлистов
         ForeignKey(
             entity = PlaylistEntity::class,
             parentColumns = ["playlistId"],
@@ -17,7 +16,7 @@ import androidx.room.Index
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = TrackEntity::class,
+            entity = TrackInPlaylistEntity::class,
             parentColumns = ["trackId"],
             childColumns = ["trackId"],
             onDelete = ForeignKey.CASCADE

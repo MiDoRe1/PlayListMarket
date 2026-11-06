@@ -4,8 +4,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.room.Room
 import com.example.playlistmarket.medialibrary.data.FavoriteTracksRepositoryImpl
 import com.example.playlistmarket.medialibrary.data.db.AppDatabase
+import com.example.playlistmarket.medialibrary.data.db.dao.FavoriteTrackDao
 import com.example.playlistmarket.medialibrary.data.db.dao.PlaylistDao
-import com.example.playlistmarket.medialibrary.data.db.dao.TrackDao
 import com.example.playlistmarket.medialibrary.data.dto.PlaylistDbConvertor
 import com.example.playlistmarket.medialibrary.data.dto.TrackDbConvertor
 import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksRepository
@@ -108,8 +108,8 @@ val mediaLibraryDataModule = module {
 
     }
 
-    single<TrackDao> {
-        get<AppDatabase>().trackDao()
+    single<FavoriteTrackDao> {
+        get<AppDatabase>().favoriteTrackDao()
     }
 
     single<PlaylistDao> {

@@ -1,47 +1,44 @@
 package com.example.playlistmarket.medialibrary.data
 
-import com.example.playlistmarket.medialibrary.data.db.AppDatabase
-import com.example.playlistmarket.medialibrary.data.db.dao.TrackDao
-import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
+import com.example.playlistmarket.medialibrary.data.db.dao.FavoriteTrackDao
+import com.example.playlistmarket.medialibrary.data.db.entity.FavoriteTrackEntity
 import com.example.playlistmarket.medialibrary.data.dto.TrackDbConvertor
 import com.example.playlistmarket.medialibrary.domain.api.FavoriteTracksRepository
 import com.example.playlistmarket.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class FavoriteTracksRepositoryImpl(
-    private val trackDao:  TrackDao,
+    private val favoriteTrackDao:  FavoriteTrackDao,
     private val trackDbConvertor: TrackDbConvertor
 ) : FavoriteTracksRepository {
 
     override  fun getFavoriteTracks(): Flow<List<Track>> =
-        trackDao.getAllFavoriteTracks().map { trackEntitiesList ->
-            convertFromTrackEntity(trackEntitiesList)
+        favoriteTrackDao.getAllFavoriteTracks().map { trackEntitiesList ->
+            convertFromFavoriteTrackEntity(trackEntitiesList)
     }
 
     override fun getTrackById(id: Long): Flow<Track?> =
-        trackDao.getTrackById(id).map {
+        favoriteTrackDao.getFavoriteTrackById(id).map {
             trackEntity ->
-            trackEntity?.let{trackDbConvertor.map(trackEntity)
+            trackEntity?.let { trackEntity ->
+                trackDbConvertor.mapToTrack(trackEntity)
             }
         }
 
 
     override suspend fun insertTrack(track: Track) {
-        trackDao.upsertFavoriteStatus(trackDbConvertor.map(track), track.isFavorites)
+        val insertTrack = track.copy(isFavorites = true)
+        favoriteTrackDao.insertFavoriteTrack(trackDbConvertor.mapToFavorite(insertTrack))
     }
 
-    override suspend fun updateTrack(track: Track) {
-        trackDao.updateTrack(trackDbConvertor.map(track))
-    }
 
     override suspend fun deleteTrack(track: Track) {
-        trackDao.deleteTrack(trackDbConvertor.map(track))
+        favoriteTrackDao.deleteFavoriteTrack(trackDbConvertor.mapToFavorite(track))
     }
 
-    private fun convertFromTrackEntity(trackEntities: List<TrackEntity>): List<Track> {
-        return trackEntities.map { trackEntity -> trackDbConvertor.map(trackEntity) }
+    private fun convertFromFavoriteTrackEntity(trackEntities: List<FavoriteTrackEntity>): List<Track> {
+        return trackEntities.map { trackEntity -> trackDbConvertor.mapToTrack(trackEntity) }
     }
 
 

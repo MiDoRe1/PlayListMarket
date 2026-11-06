@@ -1,9 +1,7 @@
 package com.example.playlistmarket.medialibrary.data.dto
 
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistEntity
-import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
 import com.example.playlistmarket.medialibrary.domain.models.Playlist
-import com.example.playlistmarket.search.domain.models.Track
 
 class PlaylistDbConvertor {
     fun map(playlist: Playlist): PlaylistEntity {

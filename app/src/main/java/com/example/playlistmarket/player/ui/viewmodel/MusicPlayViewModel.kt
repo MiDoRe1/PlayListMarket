@@ -167,14 +167,16 @@ class MusicPlayViewModel(
 
     fun changeFavoriteStatusOfTrack(){
         if (!allowedClick()) return
-        Log.d("addtrack", "changeStatusPre: ${track.trackId}")
         val trackToUpdate = track.copy(isFavorites = !track.isFavorites)
         Log.d("addtrack", "changeStatusAfte: ${trackToUpdate.trackId}")
         viewModelScope.launch {
-            favoriteTracksInteractor.insertTrack(trackToUpdate)
-            val updatedTrack = favoriteTracksInteractor.getTrackById(trackToUpdate.trackId).first()
-            track = updatedTrack ?: trackToUpdate
-            Log.d("addtrack", "changeStatusAfterAll: ${track.trackId}")
+            if (track.isFavorites == false) {
+                favoriteTracksInteractor.insertTrack(trackToUpdate)
+
+            } else {
+                favoriteTracksInteractor.deleteTrack(track)
+            }
+            track = trackToUpdate
             trackInformationStatus.postValue(track)
         }
     }

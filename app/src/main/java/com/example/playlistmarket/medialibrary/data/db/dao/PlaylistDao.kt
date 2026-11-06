@@ -9,19 +9,19 @@ import androidx.room.Update
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistEntity
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistTracksCrossRef
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistWithTracks
-import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
+import com.example.playlistmarket.medialibrary.data.db.entity.TrackInPlaylistEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlaylistDao {
 
-    @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPlaylist(playlistEntity: PlaylistEntity): Long
 
     @Update(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlaylist(playlistEntity: PlaylistEntity): Int
-    @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTrackIfNotExist(trackEntity: TrackEntity)
+    @Insert(entity = TrackInPlaylistEntity::class, onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTrackIfNotExist(trackEntity: TrackInPlaylistEntity)
 
     @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPlaylistIfNotExist(playlistEntity: PlaylistEntity)
@@ -30,18 +30,18 @@ interface PlaylistDao {
     suspend fun insertTrackInPlaylistUsingCrossRef(playlistTracksCrossRef: PlaylistTracksCrossRef): Long
 
     @Transaction
-    suspend fun insertTrackInPlaylist(playlistEntity: PlaylistEntity, trackEntity: TrackEntity) {
-        insertTrackIfNotExist(trackEntity)
+    suspend fun insertTrackInPlaylist(playlistEntity: PlaylistEntity, trackInPlaylistEntity: TrackInPlaylistEntity) {
+        insertTrackIfNotExist(trackInPlaylistEntity)
         insertPlaylistIfNotExist(playlistEntity)
         val newRowId = insertTrackInPlaylistUsingCrossRef(
-            PlaylistTracksCrossRef(playlistEntity.playlistId, trackEntity.trackId)
+            PlaylistTracksCrossRef(playlistEntity.playlistId, trackInPlaylistEntity.trackId)
         )
         if (newRowId > 0) incrementTrackCount(playlistEntity.playlistId)
     }
 
     @Transaction
-    suspend fun deleteTrackFromPlaylist(playlistEntity: PlaylistEntity, trackEntity: TrackEntity) {
-        val deleteRowsCount = deleteTrackFromListById(playlistEntity.playlistId, trackEntity.trackId)
+    suspend fun deleteTrackFromPlaylist(playlistEntity: PlaylistEntity, trackInPlaylistEntity: TrackInPlaylistEntity) {
+        val deleteRowsCount = deleteTrackFromListById(playlistEntity.playlistId, trackInPlaylistEntity.trackId)
         if (deleteRowsCount > 0) decrementTrackCount(playlistEntity.playlistId)
     }
 

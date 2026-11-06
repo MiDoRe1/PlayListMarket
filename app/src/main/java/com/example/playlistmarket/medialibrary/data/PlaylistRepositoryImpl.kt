@@ -3,7 +3,6 @@ package com.example.playlistmarket.medialibrary.data
 import android.util.Log
 import com.example.playlistmarket.medialibrary.data.db.dao.PlaylistDao
 import com.example.playlistmarket.medialibrary.data.db.entity.PlaylistEntity
-import com.example.playlistmarket.medialibrary.data.db.entity.TrackEntity
 import com.example.playlistmarket.medialibrary.data.dto.PlaylistDbConvertor
 import com.example.playlistmarket.medialibrary.data.dto.TrackDbConvertor
 import com.example.playlistmarket.medialibrary.domain.api.PlaylistRepository
@@ -11,7 +10,6 @@ import com.example.playlistmarket.medialibrary.domain.models.Playlist
 import com.example.playlistmarket.medialibrary.domain.models.PlaylistPattern
 import com.example.playlistmarket.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class PlaylistRepositoryImpl(
@@ -28,9 +26,10 @@ class PlaylistRepositoryImpl(
         playlist: Playlist,
         track: Track
     ) {
+
         playlistDao.insertTrackInPlaylist(
             playlistDbConvertor.map(playlist),
-            trackDbConvertor.map(track)
+            trackDbConvertor.mapToTrackInPlaylist(track)
         )
     }
 
@@ -40,7 +39,7 @@ class PlaylistRepositoryImpl(
     ) {
         playlistDao.deleteTrackFromPlaylist(
             playlistDbConvertor.map(playlist),
-            trackDbConvertor.map(track)
+            trackDbConvertor.mapToTrackInPlaylist(track)
         )
     }
 
@@ -67,7 +66,7 @@ class PlaylistRepositoryImpl(
             playlistDbConvertor.map(playlist).playlistId
         )
         return playlistWithTracks?.let { data ->
-            data.trackEntities.map { TrackEntity -> trackDbConvertor.map(TrackEntity) }
+            data.trackEntities.map { TrackEntity -> trackDbConvertor.mapToTrack(TrackEntity) }
         } ?: emptyList()
     }
 

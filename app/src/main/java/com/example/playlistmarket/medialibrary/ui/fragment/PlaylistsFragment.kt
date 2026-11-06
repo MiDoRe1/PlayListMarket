@@ -93,7 +93,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun showEmptyPlaceHolder() {
-        binding.emptyPlaceholder.visibility = View.GONE
+        binding.emptyPlaceholder.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

@@ -3,8 +3,8 @@ package com.example.playlistmarket.medialibrary.data.db.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "track_table")
-class TrackEntity (
+@Entity(tableName = "track_in_playlist_table")
+class TrackInPlaylistEntity (
     @PrimaryKey
     val trackId: Long,
     val trackName: String, // Название композиции

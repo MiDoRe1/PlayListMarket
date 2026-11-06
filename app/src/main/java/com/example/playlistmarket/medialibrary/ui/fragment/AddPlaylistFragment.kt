@@ -42,12 +42,6 @@ import kotlin.getValue
 
 class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
 
-    private var playList = object {
-        var coverName: String? = null
-        var name: String? = null
-        var description: String? = null
-    }
-
     private val viewModel: AddPlaylistViewModel by viewModel()
 
 
@@ -57,8 +51,6 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
         if (uri != null) {
             viewModel.updateCoverUrl(uri)
             loadImgToPlaceHolder(uri)
-        } else {
-            showDefaultPlaceholder()
         }
     }
 
@@ -153,17 +145,12 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
     }
 
     private fun loadImgToPlaceHolder(uri: Uri) {
-        try {
-            binding.imageviewPlaylistImg.scaleType = ImageView.ScaleType.CENTER_CROP
-            binding.imageviewPlaylistImg.setImageURI(uri)
-            Glide.with(requireContext())
-                .load(uri)
-                .transform(CenterCrop(), RoundedCorners(dpToPx(8F,requireContext())))
-                .into(binding.imageviewPlaylistImg)
-        } catch (e: Exception) {
-            showDefaultPlaceholder()
-        }
-
+        binding.imageviewPlaylistImg.scaleType = ImageView.ScaleType.CENTER_CROP
+        binding.imageviewPlaylistImg.setImageURI(uri)
+        Glide.with(requireContext())
+            .load(uri)
+            .transform(CenterCrop(), RoundedCorners(dpToPx(8F,requireContext())))
+            .into(binding.imageviewPlaylistImg)
     }
 
 
@@ -171,13 +158,6 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", requireContext().packageName, null)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        startActivity(intent)
-    }
 
     private fun initEditTextPlaylistTitle() {
         binding.editTextPlaylistTitle.addTextChangedListener(

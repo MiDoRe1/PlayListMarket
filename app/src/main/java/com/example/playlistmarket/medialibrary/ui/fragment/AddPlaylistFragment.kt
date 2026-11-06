@@ -145,8 +145,6 @@ class AddPlaylistFragment : BindingFragment<FragmentPlaylistAddBinding>() {
     }
 
     private fun loadImgToPlaceHolder(uri: Uri) {
-        binding.imageviewPlaylistImg.scaleType = ImageView.ScaleType.CENTER_CROP
-        binding.imageviewPlaylistImg.setImageURI(uri)
         Glide.with(requireContext())
             .load(uri)
             .transform(CenterCrop(), RoundedCorners(dpToPx(8F,requireContext())))

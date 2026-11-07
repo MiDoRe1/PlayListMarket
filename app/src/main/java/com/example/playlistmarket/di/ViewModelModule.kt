@@ -1,5 +1,6 @@
 package com.example.playlistmarket.di
 
+import com.example.playlistmarket.medialibrary.ui.viewmodel.AddPlaylistViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.PlaylistsViewModel
 import com.example.playlistmarket.player.ui.viewmodel.MusicPlayViewModel
@@ -8,6 +9,8 @@ import com.example.playlistmarket.settings.ui.viewmodel.SettingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import com.example.playlistmarket.search.domain.models.Track
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 
 val viewModelModule = module {
     viewModel<SearchViewModel> {
@@ -15,7 +18,7 @@ val viewModelModule = module {
     }
 
     viewModel<MusicPlayViewModel> { (track: Track) ->
-        MusicPlayViewModel(track, get())
+        MusicPlayViewModel(track, get(), get())
     }
 
     viewModel<SettingViewModel> {
@@ -27,7 +30,11 @@ val viewModelModule = module {
     }
 
     viewModel<PlaylistsViewModel> {
-        PlaylistsViewModel()
+        PlaylistsViewModel(get())
+    }
+
+    viewModel<AddPlaylistViewModel> {
+        AddPlaylistViewModel(get(), get())
     }
 
 }

@@ -8,4 +8,5 @@ sealed class State {
     object Pause: State()
     data class Playing(val timeOfTrack: String): State()
 
+
 }

@@ -13,6 +13,7 @@ import com.example.playlistmarket.di.sharingDomainModule
 import com.example.playlistmarket.di.utilsModule
 import com.example.playlistmarket.di.viewModelModule
 import com.example.playlistmarket.settings.domain.api.SettingsInteractor
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -38,6 +39,8 @@ class PlayListMarketApp : Application() {
             themeSettings, message ->
             switchTheme(themeSettings?.isDarkTheme ?: true)
         }
+
+        PermissionRequester.initialize(applicationContext)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {

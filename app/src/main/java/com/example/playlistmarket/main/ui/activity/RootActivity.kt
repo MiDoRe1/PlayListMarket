@@ -32,7 +32,7 @@ class RootActivity : AppCompatActivity(R.layout.activity_root) {
         binding.bottomNavigationViewMain.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.musicPlayerFragment -> hideBottomNavUI()
+                R.id.musicPlayerFragment,R.id.addPlaylistFragment  -> hideBottomNavUI()
                 else -> showBottomNavUI()
             }
         }

@@ -13,6 +13,7 @@
         <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="android:colorBackground">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
+        <item name="materialAlertDialogTheme">@style/MyCustomAlertDialog</item>
     </style>
 
     <style name="SecondaryMain" parent="Base.Theme.PlayListMarket">
@@ -20,12 +21,12 @@
         <item name="colorPrimaryVariant">@color/secondary_variant_color_for_app</item>
         <item name="colorOnPrimary">@color/color_on_secondary_for_app</item>
         <!-- Background color -->
-        <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="colorSecondary">@color/secondary_color_for_app</item>
         <item name="colorSecondaryVariant">@color/secondary_variant_color_for_app</item>
         <item name="colorOnSecondary">@color/color_on_secondary_for_app</item>
         <!-- Background color -->
         <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="android:colorBackground">?attr/colorPrimary</item>
+        <item name="materialAlertDialogTheme">@style/MyCustomAlertDialog</item>
     </style>
 </resources>

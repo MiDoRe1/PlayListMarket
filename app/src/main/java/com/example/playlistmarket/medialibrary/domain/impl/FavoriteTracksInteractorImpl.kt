@@ -24,11 +24,6 @@ class FavoriteTracksInteractorImpl(
         }
     }
 
-    override suspend fun updateTrack(track: Track) {
-        withContext(Dispatchers.IO) {
-        favoriteTracksRepository.updateTrack(track)
-        }
-    }
 
     override suspend fun deleteTrack(track: Track) {
         withContext(Dispatchers.IO) {

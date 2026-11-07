@@ -41,6 +41,17 @@ fun <T> debounce(
     }
 }
 
+fun getTracksPlural(count: Long): String {
+    val mod10 = (count % 10).toInt()
+    val mod100 = (count % 100).toInt()
+    return when {
+        mod100 in 11..14 -> "$count треков"
+        mod10 == 1 -> "$count трек"
+        mod10 in 2..4 -> "$count трека"
+        else -> "$count треков"
+    }
+}
+
 
 
 

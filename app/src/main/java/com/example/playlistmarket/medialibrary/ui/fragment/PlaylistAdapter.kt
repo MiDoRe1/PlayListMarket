@@ -15,14 +15,12 @@ class PlaylistAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         return PlaylistViewHolder(
             parent,
-            {
-                position: Int ->
-                {
-                    onItemClick(playlists[position])
-                }
-
-            }
+            callbackOnClick
         )
+    }
+
+    private val callbackOnClick = {position: Int ->
+        onItemClick(playlists[position])
     }
 
     override fun getItemCount(): Int {

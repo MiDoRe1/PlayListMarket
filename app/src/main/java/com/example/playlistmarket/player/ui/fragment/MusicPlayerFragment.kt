@@ -204,8 +204,6 @@ class MusicPlayerFragment : BindingFragment<FragmentMusicPlayerBinding>() {
                 binding.overlay.alpha = if (p1 > 0.7f) p1 else 0.7f
 
             }
-
-
         })
     }
 

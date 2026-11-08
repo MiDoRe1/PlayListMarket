@@ -4,6 +4,7 @@ import com.example.playlistmarket.medialibrary.ui.viewmodel.AddPlaylistViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.PlaylistsViewModel
 import com.example.playlistmarket.player.ui.viewmodel.MusicPlayViewModel
+import com.example.playlistmarket.playlist.ui.viewmodel.PlaylistViewModel
 import com.example.playlistmarket.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmarket.settings.ui.viewmodel.SettingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -35,6 +36,10 @@ val viewModelModule = module {
 
     viewModel<AddPlaylistViewModel> {
         AddPlaylistViewModel(get(), get())
+    }
+
+    viewModel<PlaylistViewModel> { (playlist_id: Long) ->
+        PlaylistViewModel(get(), playlist_id)
     }
 
 }

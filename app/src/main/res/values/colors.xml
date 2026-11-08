@@ -31,5 +31,6 @@
     <color name="track_group_and_time_on_search_screen">@color/yp_gray</color>
     <color name="side_button_substrate_on_the_player">#1A1B22</color>
     <color name="textbox_stroke_color_on_add_playlist">@color/yp_gray</color>
+    <color name="playlist_bottom_sheet_pip">@color/yp_gray_light</color>
 
 </resources>

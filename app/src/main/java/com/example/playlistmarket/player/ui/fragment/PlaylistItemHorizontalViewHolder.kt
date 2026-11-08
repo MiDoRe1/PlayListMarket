@@ -14,8 +14,8 @@ import com.example.playlistmarket.utils.dpToPx
 import com.example.playlistmarket.utils.getTracksPlural
 import java.io.File
 
-class PlaylistItemHorizontalViewHolder(
-    private val binding: PlaylistItemHorizontalBinding,
+open class PlaylistItemHorizontalViewHolder(
+    protected val binding: PlaylistItemHorizontalBinding,
     private val onClick: (position: Int) -> Unit
 ): RecyclerView.ViewHolder(binding.root) {
 

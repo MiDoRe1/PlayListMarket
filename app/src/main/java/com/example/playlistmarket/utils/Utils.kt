@@ -52,6 +52,17 @@ fun getTracksPlural(count: Long): String {
     }
 }
 
+fun getMinutePlural(count: Long): String {
+    val mod10 = (count % 10).toInt()
+    val mod100 = (count % 100).toInt()
+    return when {
+        mod100 in 11..14 -> "$count минут"
+        mod10 == 1 -> "$count минута"
+        mod10 in 2..4 -> "$count минуты"
+        else -> "$count минут"
+    }
+}
+
 
 
 

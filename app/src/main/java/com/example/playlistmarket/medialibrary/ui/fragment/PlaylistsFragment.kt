@@ -1,6 +1,7 @@
 package com.example.playlistmarket.medialibrary.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.playlistmarket.medialibrary.domain.models.Playlist
 import com.example.playlistmarket.medialibrary.ui.viewmodel.PlaylistsViewModel
 import com.example.playlistmarket.medialibrary.ui.viewmodel.PlaylistsVmState
 import com.example.playlistmarket.player.ui.fragment.MusicPlayerFragment
+import com.example.playlistmarket.playlist.ui.fragment.PlaylistFragment
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,7 +27,10 @@ class PlaylistsFragment : Fragment() {
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
 
     private val onItemClickCallBack = { playlist: Playlist ->
-        playlistsViewModel.showPlaylistInfo(playlist)
+        findNavController().navigate(
+            R.id.action_mediaLibraryFragment_to_playlistFragment,
+            PlaylistFragment.getArgs(playlist.id)
+        )
     }
 
 
@@ -74,7 +79,12 @@ class PlaylistsFragment : Fragment() {
     }
     private fun initRvPlaylist() {
         binding.recyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerViewPlaylists.adapter = PlaylistAdapter(playlists, onItemClickCallBack)
+        binding.recyclerViewPlaylists.adapter = PlaylistAdapter(playlists) { playlist ->
+            Log.d("nav", "goto")
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playlistFragment,
+                PlaylistFragment.getArgs(playlist.id))
+        }
     }
 
     private fun hideAllPlaceholders() {

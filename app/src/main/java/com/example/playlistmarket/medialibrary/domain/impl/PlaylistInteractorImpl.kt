@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class PlaylistInteractorImpl(
@@ -32,6 +33,10 @@ class PlaylistInteractorImpl(
         playlistRepository.deleteTrackFromPlaylist(playlist, track)
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        playlistRepository.deletePlaylist(playlist)
+    }
+
     override suspend fun createPlaylist(playlistPattern: PlaylistPattern): Playlist {
         return playlistRepository.createPlaylist(playlistPattern)
     }
@@ -50,4 +55,9 @@ class PlaylistInteractorImpl(
     ): Boolean {
         return playlistRepository.isTrackInPlaylist(playlist, track)
     }
+
+    override suspend fun getPlaylistById(id: Long): Flow<Playlist?> =
+        playlistRepository.getPlaylistById(id)
+
+
 }

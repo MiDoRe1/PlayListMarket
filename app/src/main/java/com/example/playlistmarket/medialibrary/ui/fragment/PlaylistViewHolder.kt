@@ -20,10 +20,10 @@ class PlaylistViewHolder(
 ): RecyclerView.ViewHolder(binding.root) {
 
     init {
-        val position = bindingAdapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            binding.root.setOnClickListener {
-                onItemClick(position)
+        binding.root.setOnClickListener {
+            val position = bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                    onItemClick(position)
             }
         }
     }

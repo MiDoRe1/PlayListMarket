@@ -33,7 +33,7 @@ class AddPlaylistViewModel(
     private val playlistPattern: PlaylistPattern = PlaylistPattern()
     private var playlist: Playlist? = null
 
-    private val loadImgJob: Job? = null
+
 
     private val stateViewModel = MutableLiveData<AddPlaylistState>(AddPlaylistState.EnteringDataState())
 
@@ -77,6 +77,24 @@ class AddPlaylistViewModel(
         }
     }
 
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            val ExternalUriImg = playlistPattern.coverUrl
+            if (ExternalUriImg.isNotBlank() && playlistPattern.coverUrl != playlist.coverUrl) {
+                playlistPattern.coverUrl = saveImageToPrivateStorage().toString()
+            } else playlistPattern.coverUrl = playlist.coverUrl
+            val updatingPlaylist = playlist.copy(
+                id = playlist.id,
+                name = playlistPattern.name,
+                description = playlistPattern.description,
+                coverUrl = playlistPattern.coverUrl,
+                countOfTracksIn = playlist.countOfTracksIn
+            )
+            playlistInteractor.updatePlaylist(updatingPlaylist)
+            stateViewModel.postValue(AddPlaylistState.FinishEditState)
+        }
+    }
+
     fun forcedCancel() {
         stateViewModel.postValue(AddPlaylistState.CloseState)
     }
@@ -87,11 +105,12 @@ class AddPlaylistViewModel(
 
             // 1. Создаем правильный путь к папке
             val filePath = File(context.filesDir, NAME_IMG_DIR_IN_PRIVATE_DIR)
+
+
             if (!filePath.exists()) {
                 val isCreated = filePath.mkdirs()
                 Log.d("SAVE_IMAGE", "Папка создана: $isCreated, путь: ${filePath.absolutePath}")
             }
-
             // 2. Генерируем уникальное имя для файла
             val fileName = "${UUID.randomUUID()}.jpeg"
             val file = File(filePath, fileName)
@@ -131,6 +150,8 @@ class AddPlaylistViewModel(
             }
         }
     }
+
+
 
     companion object {
         val NAME_IMG_DIR_IN_PRIVATE_DIR = "playlistCovers"

@@ -7,4 +7,5 @@ sealed class AddPlaylistState {
     object WarningState: AddPlaylistState()
     data class PlaylistCreatedState(val playlist: Playlist): AddPlaylistState()
     object CloseState: AddPlaylistState()
+    object FinishEditState: AddPlaylistState()
 }

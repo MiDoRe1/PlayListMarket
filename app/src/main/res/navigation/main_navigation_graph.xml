@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mediaLibraryFragment_to_addPlaylistFragment"
             app:destination="@id/addPlaylistFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistFragment"
+            app:destination="@id/playlistFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -52,4 +55,15 @@
         android:id="@+id/addPlaylistFragment"
         android:name="com.example.playlistmarket.medialibrary.ui.fragment.AddPlaylistFragment"
         android:label="AddPlaylistFragment" />
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.playlistmarket.playlist.ui.fragment.PlaylistFragment"
+        android:label="PlaylistFragment" >
+        <action
+            android:id="@+id/action_playlistFragment_to_musicPlayerFragment"
+            app:destination="@id/musicPlayerFragment" />
+        <action
+            android:id="@+id/action_playlistFragment_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
+    </fragment>
 </navigation>

@@ -75,6 +75,11 @@ class PlaylistRepositoryImpl(
             playlistEntities.map { playlistEnt -> playlistDbConvertor.map(playlistEnt)}
         }
 
+    override fun getPlaylistById(id: Long): Flow<Playlist?> =
+        playlistDao.getPlaylistById(id).map { playlistEntity ->
+            playlistEntity?.let { playlistDbConvertor.map(playlistEntity) }
+        }
+
     override suspend fun isTrackInPlaylist(
         playlist: Playlist,
         track: Track
@@ -84,6 +89,10 @@ class PlaylistRepositoryImpl(
         Log.d("addtrack", "base: ${res==null}")
         if (res != null) Log.d("addtrack", "base: ${res}}")
         return res != null
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        playlistDao.fullDeletePlaylist(playlist.id)
     }
 
 }

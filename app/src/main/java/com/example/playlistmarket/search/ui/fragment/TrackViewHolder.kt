@@ -12,8 +12,8 @@ import com.example.playlistmarket.databinding.TrackItemBinding
 import com.example.playlistmarket.search.domain.models.Track
 import com.example.playlistmarket.utils.dpToPx
 
-class TrackViewHolder(
-    private val binding: TrackItemBinding,
+open class TrackViewHolder(
+    protected val binding: TrackItemBinding,
     private val onItemClick: (position: Int)-> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
